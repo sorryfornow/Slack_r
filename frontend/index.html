@@ -17,22 +17,34 @@
     <h1>Slackr</h1>
   </header> -->
   <main role="main">
+
     <!-- app goes here -->
-    <div id="signin">
+    <div id="signin__container">
       <h1>Slackr</h1>
       <form id="signinForm">
         <input type="text" id="email_signin" placeholder="Enter your email..." />
-        <input type="text" id="password_signin" placeholder="Enter your password..." />
-        <button type="submit" id="signin_submit">Sign In</button>
+        <input type="text" id="password__signin" placeholder="Enter your password..." />
+        <button type="submit" id="signin__submit">Sign In</button>
       </form>
+      <button type="submit" id="signupButton">Sign Up</button>
     </div>
 
+    <div id="signup__container">
+      <h1>Slackr</h1>
+      <form id="signupForm">
+        <input type="text" id="email__signup" placeholder="Enter your email..." />
+        <input type="text" id="password__signup" placeholder="Enter your password..." />
+        <input type="text" id="password__confirm" placeholder="Confirm your password..." />
+        <button type="submit" id="signup__submit">Sign Up</button>
+      </form>
+      <button type="submit" id="signinButton">Sign In</button>
+    </div> 
 
-    <div class="container">
+
+    <div id="info__container">
       <div class="banner">
         <div>Slackr</div>
       </div>
-
       <div class="sidebar">
         <div class="sidebar__header">
           <h2>Channels</h2>
@@ -44,7 +56,6 @@
           <li class="sidebar__channel"># slackr</li>
         </ul>
       </div>
-
 
       <div class="chat">
         <div class="chat__header">
@@ -67,6 +78,7 @@
       </div>
 
     </div>
+
   </main>
 
   <footer>

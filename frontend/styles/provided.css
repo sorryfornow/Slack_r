@@ -8,10 +8,27 @@ html, body {
     font-family: -apple-system, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-.container {
+.signin_container {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.signup_container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+#info_container {
+    display: none;
     flex-direction: row;
     align-items: left;
     justify-content: flex-start;
     height: 100%;
 }
+
