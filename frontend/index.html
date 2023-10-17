@@ -13,15 +13,66 @@
 
 <body>
   <!-- This is an example app structure, you can modify this as much as you choose -->
-  <header class="banner">
+  <!-- <header class="banner">
     <h1>Slackr</h1>
-  </header>
+  </header> -->
   <main role="main">
     <!-- app goes here -->
+    <div id="signin">
+      <h1>Slackr</h1>
+      <form id="signinForm">
+        <input type="text" id="email_signin" placeholder="Enter your email..." />
+        <input type="text" id="password_signin" placeholder="Enter your password..." />
+        <button type="submit" id="signin_submit">Sign In</button>
+      </form>
+    </div>
+
+
+    <div class="container">
+      <div class="banner">
+        <div>Slackr</div>
+      </div>
+
+      <div class="sidebar">
+        <div class="sidebar__header">
+          <h2>Channels</h2>
+          <button class="sidebar__add-channel">+</button>
+        </div>
+        <ul class="sidebar__channels">
+          <li class="sidebar__channel sidebar__channel--active"># general</li>
+          <li class="sidebar__channel"># random</li>
+          <li class="sidebar__channel"># slackr</li>
+        </ul>
+      </div>
+
+
+      <div class="chat">
+        <div class="chat__header">
+          <h2># general</h2>
+        </div>
+        <ul class="chat__messages">
+          <li class="chat__message">
+            <div class="chat__message__author">John</div>
+            <div class="chat__message__content">Hello world!</div>
+          </li>
+          <li class="chat__message">
+            <div class="chat__message__author">Jane</div>
+            <div class="chat__message__content">Hi John!</div>
+          </li>
+        </ul>
+        <form class="chat__form">
+          <input type="text" class="chat__input" placeholder="Type a message..." />
+          <button type="submit" class="chat__submit">Send</button>
+        </form>
+      </div>
+
+    </div>
   </main>
+
   <footer>
     <p>&copy; Slackr</p>
   </footer>
+
   <script type="module" src="src/main.js"></script>
 </body>
 
