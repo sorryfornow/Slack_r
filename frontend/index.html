@@ -17,66 +17,72 @@
     <h1>Slackr</h1>
   </header> -->
   <main role="main">
-
     <!-- app goes here -->
-    <div id="signin__container">
+    <div class="signinContainer">
       <h1>Slackr</h1>
       <form id="signinForm">
-        <input type="text" id="email_signin" placeholder="Enter your email..." />
-        <input type="text" id="password__signin" placeholder="Enter your password..." />
-        <button type="submit" id="signin__submit">Sign In</button>
+        Email:<input type="text" id="emailSignin" name="emailSignin" placeholder="Enter your email..." />
+        Password:<input type="text" id="passwordSignin" name="passwordSignin" placeholder="Enter your password..." />        
+        <button type="submit" id="signinSubmit">Sign In</button>
       </form>
       <button type="submit" id="signupButton">Sign Up</button>
     </div>
 
-    <div id="signup__container">
+    <div class="signupContainer">
       <h1>Slackr</h1>
       <form id="signupForm">
-        <input type="text" id="email__signup" placeholder="Enter your email..." />
-        <input type="text" id="password__signup" placeholder="Enter your password..." />
-        <input type="text" id="password__confirm" placeholder="Confirm your password..." />
-        <button type="submit" id="signup__submit">Sign Up</button>
+        Email:<input type="text" id="emailSignup" name="emailSignup" placeholder="Enter your email..." />
+        Name:<input type="text" id="nameSignup" name="nameSignup" placeholder="Enter your name..." />
+        Password:<input type="text" id="passwordSignup" name="passwordSignup" placeholder="Enter your password..." />
+        Confirm Password:<input type="text" id="passwordConfirm" name="passwordConfirm" placeholder="Confirm your password..." />        
+        <button type="submit" id="signupSubmit">Sign Up</button>
       </form>
       <button type="submit" id="signinButton">Sign In</button>
     </div> 
 
 
-    <div id="info__container">
+    <div class="infoContainer">
       <div class="banner">
         <div>Slackr</div>
       </div>
-      <div class="sidebar">
-        <div class="sidebar__header">
-          <h2>Channels</h2>
-          <button class="sidebar__add-channel">+</button>
-        </div>
-        <ul class="sidebar__channels">
-          <li class="sidebar__channel sidebar__channel--active"># general</li>
-          <li class="sidebar__channel"># random</li>
-          <li class="sidebar__channel"># slackr</li>
-        </ul>
-      </div>
 
-      <div class="chat">
-        <div class="chat__header">
-          <h2># general</h2>
-        </div>
-        <ul class="chat__messages">
-          <li class="chat__message">
-            <div class="chat__message__author">John</div>
-            <div class="chat__message__content">Hello world!</div>
-          </li>
-          <li class="chat__message">
-            <div class="chat__message__author">Jane</div>
-            <div class="chat__message__content">Hi John!</div>
-          </li>
-        </ul>
-        <form class="chat__form">
-          <input type="text" class="chat__input" placeholder="Type a message..." />
-          <button type="submit" class="chat__submit">Send</button>
-        </form>
-      </div>
+      <div class="chatDetails">
 
+        <div class="sidebar">
+          <div class="sidebarHeader">
+            <h2>Channels</h2>
+            <button class="sidebarAddChannel">+</button>
+          </div>
+          <ul class="sidebarChannels">
+            <!-- <li class="sidebarChannel sidebarChannelActive"># general</li>
+            <li class="sidebarChannel"># random</li>
+            <li class="sidebarChannel"># slackr</li> -->
+          </ul>
+        </div>
+  
+        <div class="chat">
+          <div class="chatHeader">
+            <h2># general</h2>
+          </div>
+          <ul class="allChatMessages">
+            <li class="chatMessage">
+              <div class="chatMessageAuthor">John</div>
+              <div class="chatMessageContent">Hello world!</div>
+            </li>
+            <li class="chatMessage">
+              <div class="chatMessageAuthor">Jane</div>
+              <div class="chatMessageContent">Hi John!</div>
+            </li>
+          </ul>
+          <form id="chatForm" name="chatForm">
+            <input type="text" class="chatInput" placeholder="Type a message..." />
+            <button type="submit" class="chatSubmit">Send</button>
+          </form>
+        </div>
+        
+      </div>
+      
+    <button type="submit" id="signoutButton">Sign Out</button>
     </div>
 
   </main>
@@ -86,6 +92,7 @@
   </footer>
 
   <script type="module" src="src/main.js"></script>
+
 </body>
 
 </html>

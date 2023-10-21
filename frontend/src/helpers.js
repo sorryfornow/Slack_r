@@ -29,3 +29,36 @@ export function fileToDataUrl(file) {
     reader.readAsDataURL(file);
     return dataUrlPromise;
 }
+
+export const apiCallPost = (path, data, callFn) => {
+    fetch (`http://localhost:${BACKEND_PORT}/${path}`, {
+        method : 'POST',
+        body : JSON.stringify(body),
+        headers : {
+            'Content-Type' : 'application/json'
+        },
+    }).then((response) => response.json())
+    .then((data) => {
+        callFn(data);
+    }
+    ).catch((error) => {
+        console.log(error);
+    });
+}
+
+export const apiCallGet = (path, token, queryString, callFn) => {
+    fetch (`http://localhost:${BACKEND_PORT}/${path}?${queryString}`, {
+        method : 'GET',
+        headers : {
+            'Content-Type' : 'application/json',
+            'Authorization' : `Bearer ${token}`
+        },
+    }).then((response) => response.json())
+    .then((data) => {
+        callFn(data);
+        return data;
+    }
+    ).catch((error) => {
+        console.log(error);
+    });
+}
