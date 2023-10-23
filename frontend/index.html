@@ -7,6 +7,7 @@
   <title>Slackr</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- You can add your styles and scripts here -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" media="screen" href="styles/provided.css" />
   <script type="module" src="src/helpers.js"></script>
 </head>
@@ -17,7 +18,52 @@
     <h1>Slackr</h1>
   </header> -->
   <main role="main">
-    <!-- app goes here -->
+
+    <div class="modal" tabindex="-1" id="createChannelModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Create a new channel</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="createChannelForm">
+              <label for="channelName">Channel Name:</label>
+              <input type="text" id="channelName" name="channelName" class="form-control" placeholder="Enter channel name..." />
+              <label for="channelDescription">Description:</label>
+              <input type="text" id="channelDescription" name="channelDescription" class="form-control" placeholder="Enter channel description..." />
+              <label for="channelType">Type:</label>
+              <select id="channelType" name="channelType" class="form-select" >
+                <option value="public" selected>Public</option>
+                <option value="private">Private</option>
+              </select>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="createChannelSubmit">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" tabindex="-1" id="errorModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Opssss!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Something goes wrong!</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="signinContainer">
       <h1>Slackr</h1>
       <form id="signinForm">
@@ -25,72 +71,79 @@
         Password:<input type="text" id="passwordSignin" name="passwordSignin" placeholder="Enter your password..." />        
         <button type="submit" id="signinSubmit">Sign In</button>
       </form>
-      <button type="submit" id="signupButton">Sign Up</button>
+      <button type="submit" id="signupButton">Go Sign Up</button>
     </div>
 
-    <div class="signupContainer">
+    <div class="signupContainer hidden">
       <h1>Slackr</h1>
+
       <form id="signupForm">
         Email:<input type="text" id="emailSignup" name="emailSignup" placeholder="Enter your email..." />
         Name:<input type="text" id="nameSignup" name="nameSignup" placeholder="Enter your name..." />
         Password:<input type="text" id="passwordSignup" name="passwordSignup" placeholder="Enter your password..." />
-        Confirm Password:<input type="text" id="passwordConfirm" name="passwordConfirm" placeholder="Confirm your password..." />        
-        <button type="submit" id="signupSubmit">Sign Up</button>
+        Confirm Password:<input type="text" id="passwordConfirm" name="passwordConfirm" placeholder="Confirm your password..." />
+        <button type="submit" id="signupSubmit" class="btn btn-primary">Register</button>
       </form>
-      <button type="submit" id="signinButton">Sign In</button>
+      <button type="submit" id="signinButton" class="btn btn-secondary">Go Sign In</button>
     </div> 
 
 
-    <div class="infoContainer">
-      <div class="banner">
-        <div>Slackr</div>
-      </div>
-
-      <div class="chatDetails">
-
-        <div class="sidebar">
+    <div class="infoContainer hidden">
+      <!-- Sidebar showing the list of channels -->
+      <div class="sidebar">
+          <button type="submit" id="signoutButton">Sign Out</button>
           <div class="sidebarHeader">
-            <h2>Channels</h2>
-            <button class="sidebarAddChannel">+</button>
+              <h2>Channels</h2>
+              <button class="sidebarAddChannel">+</button>
           </div>
-          <ul class="sidebarChannels">
-            <!-- <li class="sidebarChannel sidebarChannelActive"># general</li>
-            <li class="sidebarChannel"># random</li>
-            <li class="sidebarChannel"># slackr</li> -->
-          </ul>
-        </div>
-  
-        <div class="chat">
-          <div class="chatHeader">
-            <h2># general</h2>
+          <div class="sidebarChannels">
+            <div class="generalChannel">
+              <h3># general</h3>
+            </div>
+            <div class="privateChannel">
+              <h3># random</h3>
+            </div>
           </div>
-          <ul class="allChatMessages">
-            <li class="chatMessage">
-              <div class="chatMessageAuthor">John</div>
-              <div class="chatMessageContent">Hello world!</div>
-            </li>
-            <li class="chatMessage">
-              <div class="chatMessageAuthor">Jane</div>
-              <div class="chatMessageContent">Hi John!</div>
-            </li>
-          </ul>
-          <form id="chatForm" name="chatForm">
-            <input type="text" class="chatInput" placeholder="Type a message..." />
-            <button type="submit" class="chatSubmit">Send</button>
-          </form>
-        </div>
-        
       </div>
-      
-    <button type="submit" id="signoutButton">Sign Out</button>
-    </div>
+
+      <div class="channelHeader">
+        <h2 id="channelName"># general</h2>
+        <p id="channelDescription">General discussions.</p>
+        <p id="channelType">Public</p>
+        <p id="channelCreationTimestamp">Created on: 1st Jan 2023</p>
+        <p id="channelCreator">Created by: John Doe</p>
+        <!-- Edit and Leave/Join buttons -->
+        <button id="editChannelBtn">Edit</button>
+        <button id="joinLeaveChannelBtn">Leave</button>
+      </div>
+
+
+  
+      <!-- Chat section -->
+      <div class="chat">
+          <div class="chatMessages">
+              <!-- Sample messages -->
+              <div class="chatMessage">
+                  <div class="chatMessageLine">
+                    <div class="chatMessageAuthor">John</div>
+                    <div class="chatMessageContent">Hello world!</div>
+                  </div>
+              </div>
+          </div>
+          <form class="chatForm">
+              <input type="text" class="chatInput" placeholder="Type a message..." />
+              <button type="submit" class="chatSubmit">Send</button>
+          </form>
+      </div>
+
+    </div>  
 
   </main>
 
   <footer>
     <p>&copy; Slackr</p>
   </footer>
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
   <script type="module" src="src/main.js"></script>
 
 </body>

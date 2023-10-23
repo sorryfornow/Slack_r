@@ -8,7 +8,7 @@ html, body {
     font-family: -apple-system, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-.hidden {
+div.hidden {
     display: none;
 }
 .showup {
@@ -16,7 +16,7 @@ html, body {
 }
 
 
-.signin_container {
+.signinContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -24,7 +24,7 @@ html, body {
     height: 100%;
 }
 
-.signup_container {
+.signupContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -32,7 +32,7 @@ html, body {
     height: 100%;
 }
 
-#info_container {
+.infoContainer {
     display: flex;
     flex-direction: row;
     align-items: left;

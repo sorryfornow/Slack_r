@@ -1,6 +1,7 @@
 import { BACKEND_PORT } from './config.js';
 // A helper you may want to use when uploading new images to the server.
-import { fileToDataUrl } from './helpers.js';
+import { fileToDataUrl, screenErr, apiCall} from './helpers.js';
+
 
 console.log('Let\'s go!');
 
@@ -15,17 +16,12 @@ let signoutButton = document.getElementById('signoutButton');
 // if the user is not logged in, the login form should be displayed
 // if the user is logged in, after refresh the page, the user should be redirected to the infoContainer
 
-document.querySelector('.signupContainer').classList.add('hidden');
-document.querySelector('.infoContainer').classList.add('hidden');
+// document.querySelector('.signupContainer').classList.add('hidden');
+// document.querySelector('.infoContainer').classList.add('hidden');
 
-let globalToken = null;
-let localToken = localStorage.getItem('token');
-if (localToken) {
-    globalToken = localToken;
-}
+let globalToken = localStorage.getItem('token');
 if (globalToken) {
     document.querySelector('.signinContainer').classList.add('hidden');
-    document.querySelector('.signupContainer').classList.add('hidden');
     document.querySelector('.infoContainer').classList.remove('hidden');
 }
 
@@ -65,6 +61,8 @@ signinButton.addEventListener('click', (event) => {
 });
 
 signoutButton.addEventListener('click', (event) => {
+    // if global token is null do nothing
+    if (!globalToken) return;
     // disable the info div and enable the signin div
     const url = `http://localhost:${BACKEND_PORT}/auth/logout`;
     fetch(url, {
@@ -86,15 +84,16 @@ signoutButton.addEventListener('click', (event) => {
         }
     }).catch((error) => {
         if (error) {
-            console.log(error);
-            alert('Invaild token');
+            // console.log(error);
+            // alert('Invaild token');
+            screenErr(error.message);
         }
     });
 });
 
 signinForm.addEventListener('submit', (event) => {
     event.preventDefault();
-    console.log('Signin form submitted');
+
     // if the Email or password is empty, an appropriate error should appear on the screen
     const email = signinForm.elements["emailSignin"].value;
     const password = signinForm.elements["passwordSignin"].value;    
@@ -112,37 +111,25 @@ signinForm.addEventListener('submit', (event) => {
 
     // send email and password to server ${BACKEND_PORT}/auth/login
     // backend/swagger.json shows the format of the request and response
-    const url = `http://localhost:${BACKEND_PORT}/auth/login`;
-    const data = { email: email, password: password };
-    console.log(data);
-    fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-            'accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
-    }).then((response) => {
-        console.log(response);
-        if (response.status == 200) {
-            document.querySelector('.signinContainer').classList.add('hidden');
-            document.querySelector('.infoContainer').classList.remove('hidden');
-            return response.json();
-        } else {
-            throw new Error('Something went wrong on api server!');
-        }
-    }).then((data) => {
-        console.log(data);
+
+    const url = `auth/login`;
+    const data = { email, password };
+    apiCall(url, data)
+    .then((data) => {
+        // Handle the success response here
+        document.querySelector('.signinContainer').classList.add('hidden');
+        document.querySelector('.infoContainer').classList.remove('hidden');
+        
         localStorage.setItem('token', data.token);
         globalToken = localStorage.getItem('token');
         console.log(globalToken);
-    }).catch((error) => {
-        if (error){
-            console.log(error);
-            alert('Email or password is incorrect');
-        }  
+    })
+    .catch((error) => {
+        // Handle the error response here
+        screenErr(error.message);
     });
-    console.log('Signin form processing finished');
+
+
 });
 
 // TODO signup token
@@ -158,55 +145,77 @@ signupForm.addEventListener('submit', (event) => {
     // regex email
     const regex = /\S+@\S+\.\S+/;
     if (!regex.test(email)) {
-        alert('Email is not valid');
+        screenErr('Email is not valid');
         return;
     }
     if (email == '' || password == '' || password2 == '' || name == '') {
-        alert('Email or password is empty');
+        screenErr('Email or password is empty');
         return;
     }
     if (password !== password2) {
-        alert('Password is not the same');
+        screenErr('Password lines are not matching');
         return;
     }
 
     
     // send email and password to server ${BACKEND_PORT}/auth/register
     // backend/swagger.json line 363 shows the format of the request and response
-    const url = `http://localhost:${BACKEND_PORT}/auth/register`;
-    const data = { email, password, name};
-    fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-            'accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
-    }).then((response) => {
-        if (response.status == 200) {
-            // document.querySelector('.signinContainer').style.display = 'flex';
-            // document.querySelector('.signupContainer').style.display = 'none';
-            // document.querySelector('.infoContainer').style.display = 'none';
-            const signupContainer = document.querySelector('.signupContainer');
-            // add a div to show the signup success message
-            const element = document.createElement('div');
-            element.innerText = 'Signup success, please login your account';
-            element.style.color = 'green';
-            signupContainer.appendChild(element);
-            // return response.json();
-        } else {
-            throw new Error('Something went wrong on api server!');
-        }
-    }).then((data) => {
-        // localStorage.setItem('token', data.token);
-    }).catch((error) => {
-        if (error) {
-            alert('Input email may already exist');
-        }
+
+    const url = `auth/register`;
+    const data = { email, password, name };
+    apiCall(url, data)
+    .then((data) => {
+        // Handle the success response here
+        const signupContainer = document.querySelector('.signupContainer');
+        const element = document.createElement('div');
+        element.innerText = 'Signup success, please login to your account';
+        element.style.color = 'green';
+        signupContainer.appendChild(element);
+    })
+    .catch((error) => {
+        // Handle the error response here
+        screenErr(error);
     });
+
     
 });
 
 
+document.addEventListener("DOMContentLoaded", () => {
+    // Get references to form elements
+    const createChannelButton = document.querySelector(".sidebarAddChannel");
+    const modal = new bootstrap.Modal(document.getElementById("createChannelModal"));
 
-let channels = document.querySelector('.sidebarChannels');
+    const form = document.getElementById("createChannelForm");
+    const channelNameInput = document.getElementById("channelName");
+    const channelDescriptionInput = document.getElementById("channelDescription");
+    const channelTypeSelect = document.getElementById("channelType");
+
+    createChannelButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        modal.show();
+    });
+
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        // Get values from form inputs
+        const channelName = channelNameInput.value;
+        const channelDescription = channelDescriptionInput.value;
+        const channelType = channelTypeSelect.value;
+  
+        // You can perform further actions here, e.g., send data to a server
+        // For now, let's just log the values to the console
+        console.log("Channel Name:", channelName);
+        console.log("Description:", channelDescription);
+        console.log("Type:", channelType);
+
+        // fetch
+        
+
+        // Close the modal
+        modal.hide();
+    });
+
+
+});

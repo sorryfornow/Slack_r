@@ -13,6 +13,8 @@
  * @param {File} file The file to be read.
  * @return {Promise<string>} Promise which resolves to the file as a data url.
  */
+import { BACKEND_PORT } from './config.js';
+
 export function fileToDataUrl(file) {
     const validFileTypes = [ 'image/jpeg', 'image/png', 'image/jpg' ]
     const valid = validFileTypes.find(type => type === file.type);
@@ -30,35 +32,36 @@ export function fileToDataUrl(file) {
     return dataUrlPromise;
 }
 
-export const apiCallPost = (path, data, callFn) => {
-    fetch (`http://localhost:${BACKEND_PORT}/${path}`, {
-        method : 'POST',
-        body : JSON.stringify(body),
-        headers : {
-            'Content-Type' : 'application/json'
-        },
-    }).then((response) => response.json())
-    .then((data) => {
-        callFn(data);
-    }
-    ).catch((error) => {
-        console.log(error);
+export const apiCall = (path, inputData = null, token = null, method = 'POST') => {
+    return new Promise((resolve, reject) => {
+        let headers = {'Content-type': 'application/json'};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        let body = inputData ? JSON.stringify(inputData) : null;
+        
+        fetch(`http://localhost:${BACKEND_PORT}/` + path, {
+            method: method,
+            headers: headers,
+            body: body
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.error) {
+                reject(data.error);
+            } else {
+                resolve(data);
+            }
+        });
     });
 }
 
-export const apiCallGet = (path, token, queryString, callFn) => {
-    fetch (`http://localhost:${BACKEND_PORT}/${path}?${queryString}`, {
-        method : 'GET',
-        headers : {
-            'Content-Type' : 'application/json',
-            'Authorization' : `Bearer ${token}`
-        },
-    }).then((response) => response.json())
-    .then((data) => {
-        callFn(data);
-        return data;
-    }
-    ).catch((error) => {
-        console.log(error);
-    });
+export function screenErr(message) {
+    const errorModalContainer = document.getElementById('errorModal');
+    const errorModalInstance = new bootstrap.Modal(errorModalContainer);
+
+    const modalMsg = errorModalContainer.querySelector('.modal-body');
+    const paragraph = document.createElement('p');
+    paragraph.innerText = message;
+    modalMsg.appendChild(paragraph);
+
+    errorModalInstance.show();
 }
