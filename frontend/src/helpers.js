@@ -65,3 +65,69 @@ export function screenErr(message) {
 
     errorModalInstance.show();
 }
+
+export function getAllChannels(curToken) {
+    const url = `channel`;
+    return apiCall(url, null, curToken, 'GET')
+        .then((data) => {
+            // Handle the success response here
+            console.log('getChannelInfo', data);
+            return data;
+        })
+        .catch((error) => {
+            // Handle the error response here
+            screenErr(error);
+        });
+}
+
+
+export function displayChannels(channelList, userId) {
+    console.log(channelList);
+
+    const privateChannelsDiv = document.querySelector('.privateChannels');
+    const publicChannelsDiv = document.querySelector('.publicChannels');
+
+    // Clear existing content
+    while (privateChannelsDiv.firstChild) {
+        privateChannelsDiv.removeChild(privateChannelsDiv.firstChild);
+    }
+    while (publicChannelsDiv.firstChild) {
+        publicChannelsDiv.removeChild(publicChannelsDiv.firstChild);
+    }
+
+    channelList.channels.forEach((channel) => {
+        if (channel.private && !channel.members.includes(globalUserId)) {
+            return; // Skip this channel
+        }
+
+        const channelDiv = document.createElement('div');
+        channelDiv.classList.add('channelBtn', 'd-flex', 'justify-content-between', 'align-items-center', 'mb-1');
+
+        const channelButton = document.createElement('button');
+        channelButton.classList.add('btn', 'btn-sm', 'flex-grow-1');
+        channelButton.textContent = channel.name;
+
+        // Apply different styles for private and public channels
+        if (channel.private) {
+            channelButton.classList.add('btn-outline-warning');
+            privateChannelsDiv.appendChild(channelDiv);
+        } else {
+            channelButton.classList.add('btn-outline-secondary');
+            publicChannelsDiv.appendChild(channelDiv);
+        }
+
+        const infoButton = document.createElement('button');
+        infoButton.classList.add('btn', 'btn-outline-info', 'btn-sm', 'ms-2', 'channelInfoBtn');
+        infoButton.textContent = '...';
+        channelDiv.appendChild(channelButton);
+        channelDiv.appendChild(infoButton);
+    });
+}
+
+
+
+
+export function addChannel2List(channelName, isPrivate){
+    const channelList = isPrivate ? document.querySelector('.privateChannels') : document.querySelector('.publicChannels');
+
+}

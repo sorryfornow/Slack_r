@@ -1,6 +1,6 @@
 import { BACKEND_PORT } from './config.js';
 // A helper you may want to use when uploading new images to the server.
-import { fileToDataUrl, screenErr, apiCall} from './helpers.js';
+import { fileToDataUrl, screenErr, apiCall, getAllChannels, displayChannels} from './helpers.js';
 
 
 console.log('Let\'s go!');
@@ -131,6 +131,18 @@ signinForm.addEventListener('submit', (event) => {
         globalUserId = localStorage.getItem('userId');
 
         console.log(globalToken);
+
+        // show all channels
+        getAllChannels(globalToken)
+        .then((channelList) => {
+            // Once channels are fetched, display them
+            displayChannels(channelList, globalUserId);
+        })
+        .catch((error) => {
+            // Handle errors here
+            screenErr(error);
+        });
+        
     })
     .catch((error) => {
         // Handle the error response here
@@ -176,8 +188,8 @@ signupForm.addEventListener('submit', (event) => {
         // Handle the success response here
         const signupContainer = document.querySelector('.signupContainer');
         const element = document.createElement('div');
-        // element.textContent = 'Signup success, please login to your account';
-        element.innerText = 'Signup success, please login to your account';
+        element.textContent = 'Signup success, please login to your account';
+        // element.innerText = 'Signup success, please login to your account';
         element.style.color = 'green';
         signupContainer.appendChild(element);
     })
@@ -190,7 +202,7 @@ signupForm.addEventListener('submit', (event) => {
 });
 
 
-
+// channel
 document.addEventListener("DOMContentLoaded", () => {
     // Get references to form elements
     const createChannelButton = document.querySelector(".sidebarAddChannel");
@@ -200,6 +212,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const channelNameInput = document.getElementById("channelName");
     const channelDescriptionInput = document.getElementById("channelDescription");
     const channelTypeSelect = document.getElementById("channelType");
+
+
 
     createChannelButton.addEventListener("click", (event) => {
         event.preventDefault();
@@ -226,6 +240,9 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((data) => {
             // Handle the success response here
             console.log('createChanel', data);
+            // addChannel2List(channelName, ifPrivate);
+            // TODO
+            
         })
         .catch((error) => {
             // Handle the error response here

@@ -116,35 +116,23 @@
 
     <div class="infoContainer hidden">
       <!-- Sidebar showing the list of channels -->
-      <div class="sidebar">
-          <button type="submit" id="signoutButton">Sign Out</button>
-          <div class="sidebarHeader">
-              <h2>Channels</h2>
-              <button class="sidebarAddChannel">+</button>
-          </div>
-
-          <div class="sidebarChannels">
-
-            <div class="privateChannels">
-              <!-- example -->
-              <div class="channelBtn hidden">
-                <button class="channelBtn">channelName</button>
-                <button class="channelInfoBtn">...</button>
-              </div>
-            </div>
-
-            <div class="publicChannels">
-              <!-- example -->
-              <div class="channelBtn hidden">
-                <button class="channelBtn">channelName</button>
-                <button class="channelInfoBtn">...</button>
-              </div>
-
-            </div>
-
-          </div>
-
-      </div>
+      <div class="sidebar d-flex flex-column bg-light border-right">
+        <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+            <h2 class="mb-0 flex-grow-1">Channels</h2>
+            <button class="btn btn-primary btn-sm ms-2 sidebarAddChannel">+</button>
+            <button type="submit" id="signoutButton" class="btn btn-outline-secondary btn-sm ms-2">Sign Out</button>
+        </div>
+    
+        <div class="sidebarChannels flex-grow-1 overflow-auto">
+            <h5 class="px-3 pt-2">Private Channels</h5>
+            <div class="privateChannels p-2"></div>
+    
+            <h5 class="px-3 pt-2">Public Channels</h5>
+            <div class="publicChannels p-2"></div>
+        </div>
+    </div>
+    
+    
 
       <div class="modal" tabindex="-1" id="channelDetail">
         <div class="modal-dialog">
