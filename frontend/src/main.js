@@ -19,9 +19,13 @@ let signoutButton = document.getElementById('signoutButton');
 
 let globalUserId = localStorage.getItem('userId');
 let globalToken = localStorage.getItem('token');
+
 if (globalToken && globalUserId) {
     document.querySelector('.signinContainer').classList.add('hidden');
     document.querySelector('.infoContainer').classList.remove('hidden');
+    getAllChannels(globalToken).then((data) => {
+        displayChannels(data, globalUserId, globalToken);
+    });
 }
 
 
@@ -372,5 +376,23 @@ document.getElementById('leaveChannelBtn').addEventListener('click', (event) => 
         screenErr(error);
     });
     console.log('leave channel');
+});
 
+document.getElementById('channelSearchForm').addEventListener('submit', (event) => {
+    event.preventDefault(); // Prevent default form submission
+    // Get the current channel ID from the input
+    const currentChannelID = document.getElementById('channelSearchInput').value;
+    // globalChannelID = currentChannelID; // cannot assign const var
+    let channelId = currentChannelID;
+    const url = `channel/${channelId}/join`;
+    apiCall(url, null, globalToken, 'POST')
+    .then(() => {
+        console.log('joinChannel success');
+        // get all channels again
+        getAllChannels(globalToken).then((data) => {
+            displayChannels(data, globalUserId, globalToken);
+        });
+    }).catch((error) => {
+        screenErr(error);
+    });
 });

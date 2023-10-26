@@ -59,17 +59,21 @@ export const apiCall = (path, inputData = null, token = null, method = 'POST') =
 export function screenErr(message) {
     const errorModalContainer = document.getElementById('errorModal');
     const errorModalInstance = new bootstrap.Modal(errorModalContainer);
-    // clear modal-body
-    while (errorModalContainer.firstChild) {
-        errorModalContainer.removeChild(errorModalContainer.firstChild);
-    }
     // add new message
-    const modalMsg = errorModalContainer.querySelector('.modal-body');
-    const paragraph = document.createElement('p');
-    paragraph.textContent = message;
-    modalMsg.appendChild(paragraph);
-
-    errorModalInstance.show();
+    const modalBody = errorModalContainer.querySelector('.modal-body');
+    // Clear modal-body content
+    if (modalBody) {
+        while (modalBody.firstChild) {
+            modalBody.removeChild(modalBody.firstChild);
+        }
+        // Add new message
+        const paragraph = document.createElement('p');
+        paragraph.textContent = message; // Ensure 'message' is defined and holds the error message
+        modalBody.appendChild(paragraph);
+        errorModalInstance.show();
+    } else {
+        console.error('Error modal body not found');
+    }
 };
 
 export function getAllChannels(curToken) {
