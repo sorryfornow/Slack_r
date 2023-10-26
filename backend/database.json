@@ -8,6 +8,14 @@
       "image": null,
       "sessionActive": true
     },
+    "34409": {
+      "email": "siqingzhang@asu.edu",
+      "name": "siqing",
+      "password": "12345",
+      "bio": null,
+      "image": null,
+      "sessionActive": true
+    },
     "56422": {
       "email": "sebastian@email.com",
       "name": "Sebastian",
@@ -18,6 +26,72 @@
     }
   },
   "channels": {
+    "102720": {
+      "name": "COMP9900",
+      "creator": 34409,
+      "private": false,
+      "description": "course",
+      "createdAt": "2023-10-26T04:24:44.740Z",
+      "members": [
+        34409
+      ],
+      "messages": []
+    },
+    "174744": {
+      "name": "Mia's Private Channel",
+      "creator": 15272,
+      "private": true,
+      "description": "test",
+      "createdAt": "2023-10-26T04:25:21.780Z",
+      "members": [
+        15272
+      ],
+      "messages": []
+    },
+    "308758": {
+      "name": "Siqing's Private Channel",
+      "creator": 34409,
+      "private": true,
+      "description": "12345",
+      "createdAt": "2023-10-26T08:09:26.663Z",
+      "members": [
+        34409
+      ],
+      "messages": []
+    },
+    "583708": {
+      "name": "SiqingCOMP",
+      "creator": 34409,
+      "private": true,
+      "description": "course contained",
+      "createdAt": "2023-10-26T08:03:14.210Z",
+      "members": [
+        34409
+      ],
+      "messages": []
+    },
+    "640194": {
+      "name": "COMP6080",
+      "creator": 15272,
+      "private": false,
+      "description": "ssss",
+      "createdAt": "2023-10-26T01:03:02.400Z",
+      "members": [
+        15272
+      ],
+      "messages": []
+    },
+    "653621": {
+      "name": "Siqing's Private Channel",
+      "creator": 34409,
+      "private": true,
+      "description": "Siqing",
+      "createdAt": "2023-10-26T04:33:20.044Z",
+      "members": [
+        34409
+      ],
+      "messages": []
+    },
     "813580": {
       "name": "public channel",
       "creator": 15272,

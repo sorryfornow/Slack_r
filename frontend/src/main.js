@@ -2,7 +2,6 @@ import { BACKEND_PORT } from './config.js';
 // A helper you may want to use when uploading new images to the server.
 import { fileToDataUrl, screenErr, apiCall, getAllChannels, displayChannels} from './helpers.js';
 
-
 console.log('Let\'s go!');
 
 let signinForm = document.forms.signinForm;
@@ -10,7 +9,6 @@ let signupForm = document.forms.signupForm;
 let signupButton = document.getElementById('signupButton');
 let signinButton = document.getElementById('signinButton');
 let signoutButton = document.getElementById('signoutButton');
-
 
 // registration and login
 // if the user is not logged in, the login form should be displayed
@@ -21,7 +19,7 @@ let signoutButton = document.getElementById('signoutButton');
 
 let globalUserId = localStorage.getItem('userId');
 let globalToken = localStorage.getItem('token');
-if (globalToken) {
+if (globalToken && globalUserId) {
     document.querySelector('.signinContainer').classList.add('hidden');
     document.querySelector('.infoContainer').classList.remove('hidden');
 }
@@ -136,13 +134,13 @@ signinForm.addEventListener('submit', (event) => {
         getAllChannels(globalToken)
         .then((channelList) => {
             // Once channels are fetched, display them
-            displayChannels(channelList, globalUserId);
+            displayChannels(channelList, globalUserId, globalToken);
         })
         .catch((error) => {
             // Handle errors here
             screenErr(error);
         });
-        
+
     })
     .catch((error) => {
         // Handle the error response here
@@ -192,6 +190,10 @@ signupForm.addEventListener('submit', (event) => {
         // element.innerText = 'Signup success, please login to your account';
         element.style.color = 'green';
         signupContainer.appendChild(element);
+        localStorage.setItem('token', token);
+        localStorage.setItem('userId', userId);
+        globalToken = localStorage.getItem('token');
+        globalUserId = localStorage.getItem('userId');
     })
     .catch((error) => {
         // Handle the error response here
@@ -212,8 +214,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const channelNameInput = document.getElementById("channelName");
     const channelDescriptionInput = document.getElementById("channelDescription");
     const channelTypeSelect = document.getElementById("channelType");
-
-
 
     createChannelButton.addEventListener("click", (event) => {
         event.preventDefault();
@@ -240,9 +240,16 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((data) => {
             // Handle the success response here
             console.log('createChanel', data);
-            // addChannel2List(channelName, ifPrivate);
-            // TODO
-            
+            // display channels
+            getAllChannels(globalToken)
+            .then((channelList) => {
+                // Once channels are fetched, display them
+                displayChannels(channelList, globalUserId, globalToken);
+            })
+            .catch((error) => {
+                // Handle errors here
+                screenErr(error);
+            });
         })
         .catch((error) => {
             // Handle the error response here
@@ -254,4 +261,45 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
+});
+
+
+// channel 
+// edit
+document.getElementById('editChannelBtn').addEventListener('click', function() {
+    // Get current channel information
+    const currentName = document.getElementById('channelInfoName').textContent;
+    const currentDescription = document.getElementById('channelDescription').textContent;
+
+    // Set the values in the edit modal
+    document.getElementById('editChannelName').value = currentName;
+    document.getElementById('editChannelDescription').value = currentDescription;
+
+    // Show the edit channel modal
+    const editChannelModal = new bootstrap.Modal(document.getElementById('editChannelModal'));
+    editChannelModal.show();
+});
+
+document.getElementById('editChannelForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Get the updated values
+    const updatedName = document.getElementById('editChannelName').value;
+    const updatedDescription = document.getElementById('editChannelDescription').value;
+
+    // Make an API call to update the channel info
+    // Example: apiCallToUpdateChannel(updatedName, updatedDescription);
+
+    // Close the modal after updating
+    const editChannelModal = bootstrap.Modal.getInstance(document.getElementById('editChannelModal'));
+    editChannelModal.hide();
+    // Optionally, update the channel information displayed in the channelInfoModal or in the channel list
+});
+
+// leave
+document.getElementById('leaveChannelBtn').addEventListener('click', (event) => {
+    event.preventDefault();
+    // leave channel
+    // TODO
+    console.log('leave channel');
 });

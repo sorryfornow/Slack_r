@@ -81,7 +81,7 @@ export function getAllChannels(curToken) {
 }
 
 
-export function displayChannels(channelList, userId) {
+export function displayChannels(channelList, globalUserId, globalToken) {
     console.log(channelList);
 
     const privateChannelsDiv = document.querySelector('.privateChannels');
@@ -96,7 +96,9 @@ export function displayChannels(channelList, userId) {
     }
 
     channelList.channels.forEach((channel) => {
-        if (channel.private && !channel.members.includes(globalUserId)) {
+        // convert globalUserId to int
+        let curUserID = parseInt(globalUserId);
+        if (channel.private && !channel.members.includes(curUserID)) {
             return; // Skip this channel
         }
 
@@ -119,15 +121,78 @@ export function displayChannels(channelList, userId) {
         const infoButton = document.createElement('button');
         infoButton.classList.add('btn', 'btn-outline-info', 'btn-sm', 'ms-2', 'channelInfoBtn');
         infoButton.textContent = '...';
+        infoButton.id = channel.id;
+
+        infoButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            // get current channel id
+            const channelId = event.target.id;
+            // get channel info
+            const url = `channel/${channelId}`;
+            apiCall(url, null, globalToken, 'GET')
+            .then((data) => {
+                // Handle the success response here
+                console.log('getChannelInfo', data);
+                // display channel info
+                const channelInfo = data; 
+                document.getElementById('channelInfoName').textContent = channelInfo.name;
+                // Assuming these elements exist in your modal
+                document.getElementById('channelDescriptionDetail').textContent = channelInfo.description;
+                document.getElementById('channelType').textContent = channelInfo.private ? 'Private Channel' : 'Public Channel';
+                
+                const date = new Date(channelInfo.createdAt);
+                // Format as 'YYYY-MM-DD HH:mm:ss'
+                const formattedDate = date.getFullYear() + '-' +
+                                    String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                                    String(date.getDate()).padStart(2, '0') + ' ' +
+                                    String(date.getHours()).padStart(2, '0') + ':' +
+                                    String(date.getMinutes()).padStart(2, '0') + ':' +
+                                    String(date.getSeconds()).padStart(2, '0');
+                document.getElementById('channelCreationTimestamp').textContent = 'Created on: ' + formattedDate;
+                getUserInfo(channelInfo.creator, globalToken).then((usrInfo) => {
+                    document.getElementById('channelCreator').textContent = 'Created by: ' +  usrInfo.name;
+                });
+                // if current user is in the channel, disable the join button enable the leave button
+                // else enable the join button
+                if (channelInfo.members.includes(curUserID)) {
+                    document.getElementById('joinChannelBtn').disabled = true;
+                    document.getElementById('joinChannelBtn').textContent = 'Joined';
+                    document.getElementById('leaveChannelBtn').disabled = false;
+                } else {
+                    document.getElementById('joinChannelBtn').disabled = false;
+                    document.getElementById('leaveChannelBtn').textContent = 'Not Joined';
+                    document.getElementById('leaveChannelBtn').disabled = true;
+                }
+            }).then(() => {
+                // show the modal
+                const channelInfoModal = new bootstrap.Modal(document.getElementById('channelInfoModal'));
+                channelInfoModal.show();
+            }).catch((error) => {
+                // Handle the error response here
+                // screenErr(error);
+                // Authorised user is not a member of this channel
+                // TODO 
+            });
+            
+        });
         channelDiv.appendChild(channelButton);
         channelDiv.appendChild(infoButton);
     });
 }
 
+export function getUserInfo(uid, curToken) {
+    // convert uid to string
+    const usrid = String(uid);
+    const url = `user/${usrid}`;
 
-
-
-export function addChannel2List(channelName, isPrivate){
-    const channelList = isPrivate ? document.querySelector('.privateChannels') : document.querySelector('.publicChannels');
-
+    // Return the promise
+    return apiCall(url, null, curToken, 'GET')
+        .then((data) => {
+            console.log('getUserInfo', data);
+            return data; // Resolved value of the promise
+        })
+        .catch((error) => {
+            screenErr(error);
+            // Consider throwing an error or returning a default value
+        });
 }

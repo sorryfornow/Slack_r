@@ -113,6 +113,34 @@
       <button type="submit" id="signinButton" class="btn btn-outline-secondary">Go Sign In</button>
     </div> 
 
+    <!-- Edit Channel Modal -->
+    <div class="modal" tabindex="-1" id="editChannelModal">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title">Edit Channel</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <form id="editChannelForm">
+                      <div class="mb-3">
+                          <label for="editChannelName" class="form-label">Channel Name</label>
+                          <input type="text" class="form-control" id="editChannelName" required>
+                      </div>
+                      <div class="mb-3">
+                          <label for="editChannelDescription" class="form-label">Description</label>
+                          <textarea class="form-control" id="editChannelDescription" rows="3" required></textarea>
+                      </div>
+                  </form>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" form="editChannelForm" class="btn btn-primary">Save Changes</button>
+              </div>
+          </div>
+      </div>
+    </div>
+
 
     <div class="infoContainer hidden">
       <!-- Sidebar showing the list of channels -->
@@ -122,7 +150,19 @@
             <button class="btn btn-primary btn-sm ms-2 sidebarAddChannel">+</button>
             <button type="submit" id="signoutButton" class="btn btn-outline-secondary btn-sm ms-2">Sign Out</button>
         </div>
-    
+
+        <!-- add a search bar here for searching channels -->
+        <div class="px-3 py-2">
+          <form id="channelSearchForm" class="row g-2">
+            <div class="col">
+              <input type="text" id="channelSearchInput" class="form-control" placeholder="Search channel ID...">
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+          </form>
+        </div>
+
         <div class="sidebarChannels flex-grow-1 overflow-auto">
             <h5 class="px-3 pt-2">Private Channels</h5>
             <div class="privateChannels p-2"></div>
@@ -130,31 +170,44 @@
             <h5 class="px-3 pt-2">Public Channels</h5>
             <div class="publicChannels p-2"></div>
         </div>
-    </div>
-    
+        <!-- schema -->
+
+        <!-- <div class="channelBtn d-flex justify-content-between align-items-center mb-1">
+          <button class="btn btn-sm flex-grow-1 [btn-outline-warning or btn-outline-secondary]">
+              [Channel Name]
+          </button>
+          <button class="btn btn-outline-info btn-sm ms-2 channelInfoBtn">
+              ...
+          </button>
+        </div> -->
+
+      </div>
     
 
-      <div class="modal" tabindex="-1" id="channelDetail">
+      <div class="modal" tabindex="-1" id="channelInfoModal">
         <div class="modal-dialog">
           <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="channelName"># general</h5>
+            <header class="modal-header">
+              <h5 class="modal-title" id="channelInfoName">General</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+            </header>
             <div class="modal-body">
-              <!-- <p id="channelDescription">General discussions.</p>
+              <p id="channelDescriptionDetail">General discussions.</p>
               <p id="channelType">Public</p>
               <p id="channelCreationTimestamp">Created on: 1st Jan 2023</p>
-              <p id="channelCreator">Created by: John Doe</p> -->
+              <p id="channelCreator">Created by: John Doe</p>
             </div>
-            <div class="modal-footer">
+            <footer class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               <button id="editChannelBtn" type="button" class="btn btn-primary">Edit</button>
-              <button id="joinLeaveChannelBtn" type="button" class="btn btn-warning">Leave Channel</button>
-            </div>
+              
+              <!-- These buttons can be conditionally rendered -->
+              <button id="leaveChannelBtn" type="button" class="btn btn-warning">Leave Channel</button>
+              <button id="joinChannelBtn" type="button" class="btn btn-warning">Join Channel</button>
+            </footer>
           </div>
         </div>
-      </div>
+      </div>      
 
   
       <!-- Chat section -->
