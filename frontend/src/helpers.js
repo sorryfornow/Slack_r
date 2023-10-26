@@ -122,15 +122,34 @@ export function displayChannels(channelList, globalUserId, globalToken) {
             publicChannelsDiv.appendChild(channelDiv);
         }
 
+
+        // edit
+        // disable the former event listener
+        let oldElement = document.getElementById('editChannelBtn');
+        let newElement = oldElement.cloneNode(true);
+        oldElement.parentNode.replaceChild(newElement, oldElement);
+        // disable the former event listener
+        oldElement = document.getElementById('editChannelBtn');
+        newElement = oldElement.cloneNode(true);
+        oldElement.parentNode.replaceChild(newElement, oldElement);
+        // disable the former event listener
+        oldElement = document.getElementById('editChannelBtn');
+        newElement = oldElement.cloneNode(true);
+        oldElement.parentNode.replaceChild(newElement, oldElement);
+        // disable the former event listener
+        oldElement = document.getElementById('editChannelBtn');
+        newElement = oldElement.cloneNode(true);
+        oldElement.parentNode.replaceChild(newElement, oldElement);
+
+
         const infoButton = document.createElement('button');
         infoButton.classList.add('btn', 'btn-outline-info', 'btn-sm', 'ms-2', 'channelInfoBtn');
         infoButton.textContent = '...';
         infoButton.id = channel.id;
-
+        // Event listener for channel info button
+        // disable the former event listener
         infoButton.addEventListener('click', (event) => {
             event.preventDefault();
-
-            
             // get current channel id
             const channelId = event.target.id;
             // get channel info
@@ -169,7 +188,6 @@ export function displayChannels(channelList, globalUserId, globalToken) {
                 channelInfoModal.show();
 
                 // enable buttons of channel info events
-                // edit
                 document.getElementById('editChannelBtn').addEventListener('click', function() {
                     // Get current channel information
                     const currentName = document.getElementById('channelInfoName').textContent;
@@ -190,7 +208,6 @@ export function displayChannels(channelList, globalUserId, globalToken) {
 
                 document.getElementById('editChannelForm').addEventListener('submit', function(event) {
                     event.preventDefault();
-
                     // Get the updated values
                     const updatedName = document.getElementById('editChannelName').value;
                     const updatedDescription = document.getElementById('editChannelDescription').value;
