@@ -30,9 +30,11 @@
       "name": "COMP9900",
       "creator": 34409,
       "private": false,
-      "description": "yesyesyes",
+      "description": "wwwww",
       "createdAt": "2023-10-26T04:24:44.740Z",
-      "members": [],
+      "members": [
+        34409
+      ],
       "messages": []
     },
     "174744": {
@@ -52,7 +54,9 @@
       "private": false,
       "description": "YES this is Private",
       "createdAt": "2023-10-26T10:58:12.065Z",
-      "members": [],
+      "members": [
+        34409
+      ],
       "messages": []
     },
     "308758": {

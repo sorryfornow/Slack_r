@@ -1,6 +1,6 @@
 import { BACKEND_PORT } from './config.js';
 // A helper you may want to use when uploading new images to the server.
-import { fileToDataUrl, screenErr, apiCall, getAllChannels, displayChannels} from './helpers.js';
+import { fileToDataUrl, globalChannelID, screenErr, apiCall, getAllChannels, displayChannels} from './helpers.js';
 
 console.log('Let\'s go!');
 
@@ -261,5 +261,116 @@ document.addEventListener("DOMContentLoaded", () => {
         // disable the modal
         modal.hide();
     });
+
+});
+
+
+
+
+
+// Event listener for join Channel button
+document.getElementById('joinChannelBtn').addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent default form submission
+    let channelId = globalChannelID;
+    const url = `channel/${channelId}/join`;
+    apiCall(url, null, globalToken, 'POST')
+    .then((data) => {
+        console.log('joinChannel success');
+        // disable the join button and show a success message in div
+        document.getElementById('joinChannelBtn').disabled = true;
+        document.getElementById('joinChannelBtn').textContent = 'Joined';
+        // new a message div
+        const joinText = document.createElement('div');
+        joinText.classList.add('text-success');
+        joinText.textContent = 'You have joined this channel';
+        const infoJoinText = document.getElementById('joinText');
+        infoJoinText.appendChild(joinText);
+        // get all channels again
+        getAllChannels(globalToken).then((data) => {
+            displayChannels(data, globalUserId, globalToken);
+        });
+    }).catch((error) => {
+        screenErr(error);
+    });
+}); // end of catch
+
+// enable buttons of channel info events
+document.getElementById('editChannelBtn').addEventListener('click', function() {
+    // Get current channel information
+    const currentName = document.getElementById('channelInfoName').textContent;
+    const currentDescription = document.getElementById('channelDescription').textContent;
+
+    // Set the values in the edit modal
+    document.getElementById('editChannelName').value = currentName;
+    // editChannelDescription is textarea
+    document.getElementById('editChannelDescription').value = currentDescription;
+
+    // Show the edit channel modal
+    const editChannelModal = new bootstrap.Modal(document.getElementById('editChannelModal'));
+    // shutdown current modal
+    const channelInfoModal = bootstrap.Modal.getInstance(document.getElementById('channelInfoModal'));
+    channelInfoModal.hide();
+    editChannelModal.show();
+});
+
+document.getElementById('editChannelForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    // Get the updated values
+    const updatedName = document.getElementById('editChannelName').value;
+    const updatedDescription = document.getElementById('editChannelDescription').value;
+
+    let channelId = globalChannelID;
+    const url = `channel/${channelId}`;
+    const data = { name: updatedName, description: updatedDescription };
+    apiCall(url, data, globalToken, 'PUT')
+    .then((data) => {
+        // Handle the success response here
+        console.log('updateChannel', data);
+        // display channels
+        getAllChannels(globalToken)
+        .then((channelList) => {
+            // Once channels are fetched, display them
+            displayChannels(channelList, globalUserId, globalToken);
+        })
+        .catch((error) => {
+            // Handle errors here
+            screenErr(error);
+        });
+    }).catch((error) => {
+        // Handle the error response here
+        screenErr(error);
+    });
+
+    // Close the modal after updating
+    const editChannelModal = bootstrap.Modal.getInstance(document.getElementById('editChannelModal'));
+    editChannelModal.hide();
+    getAllChannels(globalToken).then((data) => {
+        displayChannels(data, globalUserId, globalToken);
+    });
+});
+
+// leave
+document.getElementById('leaveChannelBtn').addEventListener('click', (event) => {
+    event.preventDefault();
+    // leave channel
+    let channelId = globalChannelID;
+    const url = `channel/${channelId}/leave`;
+    apiCall(url, null, globalToken, 'POST')
+    .then((data) => {
+        console.log('leave channel');
+        // disable the button
+        document.getElementById('leaveChannelBtn').disabled = true;
+        document.getElementById('inviteChannelBtn').disabled = true;
+        document.getElementById('editChannelBtn').disabled = true;
+        document.getElementById('leaveChannelBtn').textContent = 'Left';
+        getAllChannels(globalToken).then((data) => {
+            displayChannels(data, globalUserId, globalToken);
+        });
+        
+    }).catch((error) => {
+        // Handle the error response here
+        screenErr(error);
+    });
+    console.log('leave channel');
 
 });
