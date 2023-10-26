@@ -191,7 +191,6 @@ signupForm.addEventListener('submit', (event) => {
         const signupContainer = document.querySelector('.signupContainer');
         const element = document.createElement('div');
         element.textContent = 'Signup success, please login to your account';
-        // element.innerText = 'Signup success, please login to your account';
         element.style.color = 'green';
         signupContainer.appendChild(element);
         localStorage.setItem('token', token);
@@ -395,4 +394,14 @@ document.getElementById('channelSearchForm').addEventListener('submit', (event) 
     }).catch((error) => {
         screenErr(error);
     });
+});
+
+document.getElementById('inviteChannelBtn').addEventListener('click', (event) => {
+    event.preventDefault(); // Prevent default form submission
+    // Get the current channel ID from the input
+    const currentChannelID = globalChannelID;
+    // globalChannelID = currentChannelID; // cannot assign const var
+    let channelId = currentChannelID;
+    const url = `channel/${channelId}/invite`;
+    // TODO: raise a Modal
 });
