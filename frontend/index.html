@@ -35,13 +35,14 @@
               </div>
               <div class="mb-3">
                 <label for="channelDescription" class="form-label">Description:</label>
-                <input type="text" id="channelDescription" name="channelDescription" class="form-control" placeholder="Enter channel description..." />
+                <!-- <input type="text" id="channelDescription" name="channelDescription" class="form-control" placeholder="Enter channel description..." /> -->
+                <textarea id="channelDescription" name="channelDescription" class="form-control" placeholder="Enter channel description..." rows="4"></textarea>
               </div>
               <div class="mb-3">
                 <label for="channelType" class="form-label">Type:</label>
                 <select id="channelType" name="channelType" class="form-select">
-                  <option value="public" selected>Public</option>
-                  <option value="private">Private</option>
+                  <option value="public" id="PublicOption" selected>Public</option>
+                  <option value="private" id="PrivateOption" >Private</option>
                 </select>
               </div>
             </div>
@@ -182,7 +183,29 @@
         </div> -->
 
       </div>
-    
+
+
+      <!-- Join channel Modal -->
+      <div class="modal fade" id="joinModal" tabindex="-1" aria-labelledby="joinModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="joinModalLabel">Join Channel</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3" id="joinText">
+                <p>Please join the channel.</p>
+              </div>
+              <button type="button" class="btn btn-primary" id="joinChannelBtn">Join</button>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
 
       <div class="modal" tabindex="-1" id="channelInfoModal">
         <div class="modal-dialog">
@@ -200,10 +223,9 @@
             <footer class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               <button id="editChannelBtn" type="button" class="btn btn-primary">Edit</button>
-              
               <!-- These buttons can be conditionally rendered -->
+              <button id="inviteChannelBtn" type="button" class="btn btn-primary">Invite</button>
               <button id="leaveChannelBtn" type="button" class="btn btn-warning">Leave Channel</button>
-              <button id="joinChannelBtn" type="button" class="btn btn-warning">Join Channel</button>
             </footer>
           </div>
         </div>

@@ -32,9 +32,7 @@
       "private": false,
       "description": "course",
       "createdAt": "2023-10-26T04:24:44.740Z",
-      "members": [
-        34409
-      ],
+      "members": [],
       "messages": []
     },
     "174744": {
@@ -48,26 +46,31 @@
       ],
       "messages": []
     },
+    "211335": {
+      "name": "COMP Siqing Private",
+      "creator": 34409,
+      "private": false,
+      "description": "YES this is Private",
+      "createdAt": "2023-10-26T10:58:12.065Z",
+      "members": [],
+      "messages": []
+    },
     "308758": {
       "name": "Siqing's Private Channel",
       "creator": 34409,
       "private": true,
       "description": "12345",
       "createdAt": "2023-10-26T08:09:26.663Z",
-      "members": [
-        34409
-      ],
+      "members": [],
       "messages": []
     },
     "583708": {
       "name": "SiqingCOMP",
       "creator": 34409,
       "private": true,
-      "description": "course contained",
+      "description": "yes I can edit this",
       "createdAt": "2023-10-26T08:03:14.210Z",
-      "members": [
-        34409
-      ],
+      "members": [],
       "messages": []
     },
     "640194": {
@@ -87,9 +90,7 @@
       "private": true,
       "description": "Siqing",
       "createdAt": "2023-10-26T04:33:20.044Z",
-      "members": [
-        34409
-      ],
+      "members": [],
       "messages": []
     },
     "813580": {
@@ -524,6 +525,42 @@
           "reacts": []
         }
       ]
+    },
+    "926701": {
+      "name": "COMP Siqing Private",
+      "creator": 34409,
+      "private": true,
+      "description": "YES this is Private",
+      "createdAt": "2023-10-26T10:58:18.655Z",
+      "members": [],
+      "messages": []
+    },
+    "949454": {
+      "name": "COMP Siqing Yes",
+      "creator": 34409,
+      "private": false,
+      "description": "CHANGE",
+      "createdAt": "2023-10-26T10:55:15.117Z",
+      "members": [],
+      "messages": []
+    },
+    "960385": {
+      "name": "COMP Siqing",
+      "creator": 34409,
+      "private": true,
+      "description": "Test Private Channel",
+      "createdAt": "2023-10-26T10:41:35.390Z",
+      "members": [],
+      "messages": []
+    },
+    "995844": {
+      "name": "Siqing's Private New TEST",
+      "creator": 34409,
+      "private": true,
+      "description": "YES I can do it",
+      "createdAt": "2023-10-26T10:47:37.717Z",
+      "members": [],
+      "messages": []
     }
   },
   "nextMessageId": 43

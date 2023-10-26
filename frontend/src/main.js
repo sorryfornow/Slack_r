@@ -134,7 +134,9 @@ signinForm.addEventListener('submit', (event) => {
         getAllChannels(globalToken)
         .then((channelList) => {
             // Once channels are fetched, display them
-            displayChannels(channelList, globalUserId, globalToken);
+            getAllChannels(globalToken).then((channelList) => {
+                displayChannels(channelList, globalUserId, globalToken);
+            });
         })
         .catch((error) => {
             // Handle errors here
@@ -244,7 +246,9 @@ document.addEventListener("DOMContentLoaded", () => {
             getAllChannels(globalToken)
             .then((channelList) => {
                 // Once channels are fetched, display them
-                displayChannels(channelList, globalUserId, globalToken);
+                getAllChannels(globalToken).then((channelList) => {
+                    displayChannels(channelList, globalUserId, globalToken);
+                });
             })
             .catch((error) => {
                 // Handle errors here
@@ -256,50 +260,8 @@ document.addEventListener("DOMContentLoaded", () => {
             screenErr(error);
         });
 
-        // Close the modal
+        // disable the modal
         modal.hide();
     });
 
-
-});
-
-
-// channel 
-// edit
-document.getElementById('editChannelBtn').addEventListener('click', function() {
-    // Get current channel information
-    const currentName = document.getElementById('channelInfoName').textContent;
-    const currentDescription = document.getElementById('channelDescription').textContent;
-
-    // Set the values in the edit modal
-    document.getElementById('editChannelName').value = currentName;
-    document.getElementById('editChannelDescription').value = currentDescription;
-
-    // Show the edit channel modal
-    const editChannelModal = new bootstrap.Modal(document.getElementById('editChannelModal'));
-    editChannelModal.show();
-});
-
-document.getElementById('editChannelForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    // Get the updated values
-    const updatedName = document.getElementById('editChannelName').value;
-    const updatedDescription = document.getElementById('editChannelDescription').value;
-
-    // Make an API call to update the channel info
-    // Example: apiCallToUpdateChannel(updatedName, updatedDescription);
-
-    // Close the modal after updating
-    const editChannelModal = bootstrap.Modal.getInstance(document.getElementById('editChannelModal'));
-    editChannelModal.hide();
-    // Optionally, update the channel information displayed in the channelInfoModal or in the channel list
-});
-
-// leave
-document.getElementById('leaveChannelBtn').addEventListener('click', (event) => {
-    event.preventDefault();
-    // leave channel
-    // TODO
-    console.log('leave channel');
 });
