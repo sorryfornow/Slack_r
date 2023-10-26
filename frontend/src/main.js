@@ -19,6 +19,7 @@ let signoutButton = document.getElementById('signoutButton');
 // document.querySelector('.signupContainer').classList.add('hidden');
 // document.querySelector('.infoContainer').classList.add('hidden');
 
+let globalUserId = localStorage.getItem('userId');
 let globalToken = localStorage.getItem('token');
 if (globalToken) {
     document.querySelector('.signinContainer').classList.add('hidden');
@@ -76,11 +77,14 @@ signoutButton.addEventListener('click', (event) => {
         console.log(response);
         if (response.status == 200) {
             console.log('signout');
-            console.log(globalToken)
+
             document.querySelector('.infoContainer').classList.add('hidden');
             document.querySelector('.signinContainer').classList.remove('hidden');
+
             localStorage.removeItem('token');
+            localStorage.removeItem('userId');
             globalToken = null;
+            globalUserId = null;
         }
     }).catch((error) => {
         if (error) {
@@ -119,9 +123,13 @@ signinForm.addEventListener('submit', (event) => {
         // Handle the success response here
         document.querySelector('.signinContainer').classList.add('hidden');
         document.querySelector('.infoContainer').classList.remove('hidden');
-        
-        localStorage.setItem('token', data.token);
+
+        const { token, userId } = data;
+        localStorage.setItem('token', token);
+        localStorage.setItem('userId', userId);
         globalToken = localStorage.getItem('token');
+        globalUserId = localStorage.getItem('userId');
+
         console.log(globalToken);
     })
     .catch((error) => {
@@ -168,6 +176,7 @@ signupForm.addEventListener('submit', (event) => {
         // Handle the success response here
         const signupContainer = document.querySelector('.signupContainer');
         const element = document.createElement('div');
+        // element.textContent = 'Signup success, please login to your account';
         element.innerText = 'Signup success, please login to your account';
         element.style.color = 'green';
         signupContainer.appendChild(element);
@@ -181,12 +190,13 @@ signupForm.addEventListener('submit', (event) => {
 });
 
 
+
 document.addEventListener("DOMContentLoaded", () => {
     // Get references to form elements
     const createChannelButton = document.querySelector(".sidebarAddChannel");
     const modal = new bootstrap.Modal(document.getElementById("createChannelModal"));
 
-    const form = document.getElementById("createChannelForm");
+    const createChannelForm = document.getElementById("createChannelForm");
     const channelNameInput = document.getElementById("channelName");
     const channelDescriptionInput = document.getElementById("channelDescription");
     const channelTypeSelect = document.getElementById("channelType");
@@ -196,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
         modal.show();
     });
 
-    form.addEventListener("submit", (event) => {
+    createChannelForm.addEventListener("submit", (event) => {
         event.preventDefault();
 
         // Get values from form inputs
@@ -206,12 +216,21 @@ document.addEventListener("DOMContentLoaded", () => {
   
         // You can perform further actions here, e.g., send data to a server
         // For now, let's just log the values to the console
-        console.log("Channel Name:", channelName);
-        console.log("Description:", channelDescription);
-        console.log("Type:", channelType);
 
-        // fetch
-        
+        const ifPrivate = channelType == 'private' ? true : false;
+        const url = `channel`;
+        const data = { name: channelName, private: ifPrivate, description: channelDescription };
+        console.log(url, data);
+
+        apiCall(url, data, globalToken, 'POST')
+        .then((data) => {
+            // Handle the success response here
+            console.log('createChanel', data);
+        })
+        .catch((error) => {
+            // Handle the error response here
+            screenErr(error);
+        });
 
         // Close the modal
         modal.hide();

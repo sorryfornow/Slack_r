@@ -18,34 +18,42 @@
     <h1>Slackr</h1>
   </header> -->
   <main role="main">
+    <!-- https://getbootstrap.com/docs/5.3/components/modal/#via-javascript -->
 
-    <div class="modal" tabindex="-1" id="createChannelModal">
+    <div class="modal fade" id="createChannelModal" tabindex="-1" aria-labelledby="createChannelModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Create a new channel</h5>
+            <h5 class="modal-title" id="createChannelModalLabel">Create a New Channel</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
-            <form id="createChannelForm">
-              <label for="channelName">Channel Name:</label>
-              <input type="text" id="channelName" name="channelName" class="form-control" placeholder="Enter channel name..." />
-              <label for="channelDescription">Description:</label>
-              <input type="text" id="channelDescription" name="channelDescription" class="form-control" placeholder="Enter channel description..." />
-              <label for="channelType">Type:</label>
-              <select id="channelType" name="channelType" class="form-select" >
-                <option value="public" selected>Public</option>
-                <option value="private">Private</option>
-              </select>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" id="createChannelSubmit">Create</button>
-          </div>
+          <form id="createChannelForm">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="channelName" class="form-label">Channel Name:</label>
+                <input type="text" id="channelName" name="channelName" class="form-control" placeholder="Enter channel name..." />
+              </div>
+              <div class="mb-3">
+                <label for="channelDescription" class="form-label">Description:</label>
+                <input type="text" id="channelDescription" name="channelDescription" class="form-control" placeholder="Enter channel description..." />
+              </div>
+              <div class="mb-3">
+                <label for="channelType" class="form-label">Type:</label>
+                <select id="channelType" name="channelType" class="form-select">
+                  <option value="public" selected>Public</option>
+                  <option value="private">Private</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" id="createChannelSubmit">Create</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
+    
 
     <div class="modal" tabindex="-1" id="errorModal">
       <div class="modal-dialog">
@@ -64,27 +72,45 @@
       </div>
     </div>
 
-    <div class="signinContainer">
-      <h1>Slackr</h1>
-      <form id="signinForm">
-        Email:<input type="text" id="emailSignin" name="emailSignin" placeholder="Enter your email..." />
-        Password:<input type="text" id="passwordSignin" name="passwordSignin" placeholder="Enter your password..." />        
-        <button type="submit" id="signinSubmit">Sign In</button>
+    <div class="container signinContainer my-5">
+      <h1 class="text-center mb-4">Slackr</h1>
+      <form id="signinForm" class="mb-3">
+        <div class="mb-3">
+          <label for="emailSignin" class="form-label">Email:</label>
+          <input type="email" class="form-control" id="emailSignin" name="emailSignin" placeholder="Enter your email...">
+        </div>
+        <div class="mb-3">
+          <label for="passwordSignin" class="form-label">Password:</label>
+          <input type="password" class="form-control" id="passwordSignin" name="passwordSignin" placeholder="Enter your password...">
+        </div>
+        <button type="submit" id="signinSubmit" class="btn btn-primary w-100">Sign In</button>
       </form>
-      <button type="submit" id="signupButton">Go Sign Up</button>
+      <button type="button" id="signupButton" class="btn btn-outline-secondary">Go Sign Up</button>
     </div>
+    
 
     <div class="signupContainer hidden">
       <h1>Slackr</h1>
-
       <form id="signupForm">
-        Email:<input type="text" id="emailSignup" name="emailSignup" placeholder="Enter your email..." />
-        Name:<input type="text" id="nameSignup" name="nameSignup" placeholder="Enter your name..." />
-        Password:<input type="text" id="passwordSignup" name="passwordSignup" placeholder="Enter your password..." />
-        Confirm Password:<input type="text" id="passwordConfirm" name="passwordConfirm" placeholder="Confirm your password..." />
-        <button type="submit" id="signupSubmit" class="btn btn-primary">Register</button>
+        <div class="mb-3">
+          <label for="emailSignup" class="form-label">Email:</label>
+          <input type="email" class="form-control" id="emailSignup" name="emailSignup" placeholder="Enter your email...">
+        </div>
+        <div class="mb-3">
+          <label for="nameSignup" class="form-label">Name:</label>
+          <input type="text" class="form-control" id="nameSignup" name="nameSignup" placeholder="Enter your name...">
+        </div>
+        <div class="mb-3">
+          <label for="passwordSignup" class="form-label">Password:</label>
+          <input type="password" class="form-control" id="passwordSignup" name="passwordSignup" placeholder="Enter your password...">
+        </div>
+        <div class="mb-4">
+          <label for="passwordConfirm" class="form-label">Confirm Password:</label>
+          <input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm" placeholder="Confirm your password...">
+        </div>
+        <button type="submit" id="signupSubmit" class="btn btn-primary w-100">Register</button>
       </form>
-      <button type="submit" id="signinButton" class="btn btn-secondary">Go Sign In</button>
+      <button type="submit" id="signinButton" class="btn btn-outline-secondary">Go Sign In</button>
     </div> 
 
 
@@ -96,27 +122,51 @@
               <h2>Channels</h2>
               <button class="sidebarAddChannel">+</button>
           </div>
+
           <div class="sidebarChannels">
-            <div class="generalChannel">
-              <h3># general</h3>
+
+            <div class="privateChannels">
+              <!-- example -->
+              <div class="channelBtn hidden">
+                <button class="channelBtn">channelName</button>
+                <button class="channelInfoBtn">...</button>
+              </div>
             </div>
-            <div class="privateChannel">
-              <h3># random</h3>
+
+            <div class="publicChannels">
+              <!-- example -->
+              <div class="channelBtn hidden">
+                <button class="channelBtn">channelName</button>
+                <button class="channelInfoBtn">...</button>
+              </div>
+
+            </div>
+
+          </div>
+
+      </div>
+
+      <div class="modal" tabindex="-1" id="channelDetail">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="channelName"># general</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <!-- <p id="channelDescription">General discussions.</p>
+              <p id="channelType">Public</p>
+              <p id="channelCreationTimestamp">Created on: 1st Jan 2023</p>
+              <p id="channelCreator">Created by: John Doe</p> -->
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button id="editChannelBtn" type="button" class="btn btn-primary">Edit</button>
+              <button id="joinLeaveChannelBtn" type="button" class="btn btn-warning">Leave Channel</button>
             </div>
           </div>
+        </div>
       </div>
-
-      <div class="channelHeader">
-        <h2 id="channelName"># general</h2>
-        <p id="channelDescription">General discussions.</p>
-        <p id="channelType">Public</p>
-        <p id="channelCreationTimestamp">Created on: 1st Jan 2023</p>
-        <p id="channelCreator">Created by: John Doe</p>
-        <!-- Edit and Leave/Join buttons -->
-        <button id="editChannelBtn">Edit</button>
-        <button id="joinLeaveChannelBtn">Leave</button>
-      </div>
-
 
   
       <!-- Chat section -->
