@@ -126,10 +126,11 @@ export function displayChannels(channelList, globalUserId, globalToken) {
         infoButton.classList.add('btn', 'btn-outline-info', 'btn-sm', 'ms-2', 'channelInfoBtn');
         infoButton.textContent = '...';
         infoButton.id = channel.id;
-        const currentButton = document.getElementById(channel.id);
 
-        currentButton.addEventListener('click', (event) => {
+        infoButton.addEventListener('click', (event) => {
             event.preventDefault();
+
+            
             // get current channel id
             const channelId = event.target.id;
             // get channel info
@@ -166,12 +167,11 @@ export function displayChannels(channelList, globalUserId, globalToken) {
                 // show the modal
                 const channelInfoModal = new bootstrap.Modal(document.getElementById('channelInfoModal'));
                 channelInfoModal.show();
+
                 // enable buttons of channel info events
                 // edit
                 document.getElementById('editChannelBtn').addEventListener('click', function() {
                     // Get current channel information
-                    // if button is in the currentButton = document.getElementById(channel.id);
-                    
                     const currentName = document.getElementById('channelInfoName').textContent;
                     const currentDescription = document.getElementById('channelDescription').textContent;
 
@@ -240,7 +240,7 @@ export function displayChannels(channelList, globalUserId, globalToken) {
                         getAllChannels(globalToken).then((data) => {
                             displayChannels(data, globalUserId, globalToken);
                         });
-
+                        
                     }).catch((error) => {
                         // Handle the error response here
                         screenErr(error);

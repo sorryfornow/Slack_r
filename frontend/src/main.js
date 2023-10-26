@@ -134,9 +134,7 @@ signinForm.addEventListener('submit', (event) => {
         getAllChannels(globalToken)
         .then((channelList) => {
             // Once channels are fetched, display them
-            getAllChannels(globalToken).then((channelList) => {
-                displayChannels(channelList, globalUserId, globalToken);
-            });
+            displayChannels(channelList, globalUserId, globalToken);
         })
         .catch((error) => {
             // Handle errors here
