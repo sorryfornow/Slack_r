@@ -77,6 +77,17 @@
       "members": [],
       "messages": []
     },
+    "630426": {
+      "name": "Siqing's secret place",
+      "creator": 34409,
+      "private": true,
+      "description": "yessssss",
+      "createdAt": "2023-10-27T05:26:09.498Z",
+      "members": [
+        34409
+      ],
+      "messages": []
+    },
     "640194": {
       "name": "COMP6080",
       "creator": 15272,
@@ -530,6 +541,17 @@
           "reacts": []
         }
       ]
+    },
+    "853838": {
+      "name": "Siqing's Private Channel NEW",
+      "creator": 34409,
+      "private": true,
+      "description": "Yes this is my Private one",
+      "createdAt": "2023-10-26T22:06:39.324Z",
+      "members": [
+        34409
+      ],
+      "messages": []
     },
     "926701": {
       "name": "COMP Siqing Private",

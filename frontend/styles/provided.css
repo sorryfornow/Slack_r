@@ -56,4 +56,105 @@ div.hidden {
     height: 100%;
 }
 
-/* display in center*/
+/* chat styles */
+
+#chatBoard {
+    display: flex;
+    flex-direction: column;
+    max-height: 300vh; /* Adjusted */
+    overflow-y: auto; /* For scrolling */
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.messageViewingArea {
+    max-height: 90vh; /* Adjust based on other elements in your layout */
+    overflow-y: auto; /* Enables scrolling */
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+}
+
+
+.message-box {
+    background: #f8f8f8;
+    border-radius: 5px;
+    margin: 1%; /* Adjusted */
+    padding: 1%; /* Adjusted */
+}
+
+.card-body {
+    margin: 1%; /* Adjusted */
+    padding: 1%; /* Adjusted */
+}
+
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.textUser {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.message-content-area {
+    background: #fff;
+    padding: 5px; /* Adjusted */
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.reactions button {
+    margin-right: 5px;
+}
+
+.btn-outline-primary {
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.btn-outline-primary:hover {
+    background: #007bff;
+    color: #fff;
+}
+
+#loadingIndicator {
+    text-align: center;
+    padding: 10px;
+    color: #888;
+}
+#messagePhotoUploadContainer {
+    padding: 10px;
+    background: #f4f4f4;
+    border-top: 1px solid #ddd;
+}
+
+#messageInput, #photoInput {
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 1rem; /* Adjust font size for readability */
+}
+
+#messageSendBtn {
+    background: #007bff;
+    color: #fff;
+    font-size: 1rem; /* Adjust font size for readability */
+}
+
+#messageSendBtn:disabled {
+    background: #aaa;
+}
+
+
+
+@media screen and (max-width: 600px) {
+    .message-content-area {
+        padding: 2%; /* Adjusted */
+    }
+    .textUser {
+        font-size: 0.8rem;
+    }
+    /* Adjust other elements as needed */
+}

@@ -298,6 +298,7 @@ document.getElementById('joinChannelBtn').addEventListener('click', function(eve
 }); // end of catch
 
 // enable buttons of channel info events
+// edit
 document.getElementById('editChannelBtn').addEventListener('click', function() {
     // Get current channel information
     const currentName = document.getElementById('channelInfoName').textContent;
@@ -396,6 +397,7 @@ document.getElementById('channelSearchForm').addEventListener('submit', (event) 
     });
 });
 
+// TODO invite
 document.getElementById('inviteChannelBtn').addEventListener('click', (event) => {
     event.preventDefault(); // Prevent default form submission
     // Get the current channel ID from the input
@@ -405,3 +407,5 @@ document.getElementById('inviteChannelBtn').addEventListener('click', (event) =>
     const url = `channel/${channelId}/invite`;
     // TODO: raise a Modal
 });
+
+

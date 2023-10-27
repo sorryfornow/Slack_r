@@ -16,6 +16,7 @@
 import { BACKEND_PORT } from './config.js';
 
 export let globalChannelID = null;
+let currentStartIndex = 0;  // index for scroll
 
 export function fileToDataUrl(file) {
     const validFileTypes = [ 'image/jpeg', 'image/png', 'image/jpg' ]
@@ -76,6 +77,7 @@ export function screenErr(message) {
     }
 };
 
+
 export function getAllChannels(curToken) {
     const url = `channel`;
     return apiCall(url, null, curToken, 'GET')
@@ -91,6 +93,228 @@ export function getAllChannels(curToken) {
 };
 
 
+// messssssssaaaaaaaaaaaaaage
+
+// message generator
+// create div for each message
+function messageBoxCreator(message, channelId, curToken) {
+    // Main message box container
+    console.log('messageId', message.id);
+    const messageBox = document.createElement('div');
+    messageBox.classList.add('card', 'mb-3', 'message-box');
+    messageBox.id = `message${message.id}+${channelId}`;
+    console.log('messageBoxId', messageBox.id);
+    // Card body
+    const cardBody = document.createElement('div');
+    cardBody.classList.add('card-body');
+
+    // User info and pin section
+    const userInfoAndPin = document.createElement('div');
+    userInfoAndPin.classList.add('d-flex', 'justify-content-between', 'align-items-center');
+    userInfoAndPin.id = 'userInfoAndPin';
+
+    // User Info
+    const userInfo = document.createElement('div');
+    userInfo.classList.add('user-info', 'd-flex', 'align-items-center');
+
+    // User Name
+    const userNameButton = document.createElement('button');
+    userNameButton.classList.add('btn', 'ml-2', 'textUser');
+    userNameButton.setAttribute('type', 'button');
+    userNameButton.setAttribute('data-user-id', message.sender);
+
+    const senderId = message.sender;
+    console.log('senderId', senderId);
+    getUserInfo(senderId, curToken).then(usrInfo => {
+        // Check if usrInfo is not null
+        if (usrInfo) {
+            userNameButton.textContent = usrInfo.name;
+        } else {
+            // Handle the case where usrInfo is null (error occurred)
+            userNameButton.textContent = "Unknown User";
+        }
+    });
+
+    userNameButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        getUserInfo(senderId, curToken).then((usrInfo) => {
+            document.getElementById('userModalName').textContent = usrInfo.name;
+            document.getElementById('userModalEmail').textContent = usrInfo.email;
+            document.getElementById('userModalBio').textContent = usrInfo.bio;
+            document.getElementById('userModalImage').src = usrInfo.image;
+            // show the modal
+            const userModal = new bootstrap.Modal(document.getElementById('userInfoModal'));
+            userModal.show();
+        });
+    });
+
+    // Timestamp
+    const timeStamp = document.createElement('small');
+    timeStamp.classList.add('text-muted');
+    timeStamp.textContent = new Date(message.sentAt).toLocaleString();
+
+    // Append user info
+    userInfo.appendChild(userNameButton);
+    userInfo.appendChild(timeStamp);
+    userInfoAndPin.appendChild(userInfo);
+
+    // Pin Button
+    const pinButton = document.createElement('button');
+    pinButton.classList.add('btn', 'btn-outline-secondary', 'btn-sm');
+    pinButton.setAttribute('type', 'button');
+    const pinIcon = document.createElement('i');
+    pinIcon.classList.add('bi', 'bi-pin-fill');
+    pinButton.appendChild(pinIcon);
+    userInfoAndPin.appendChild(pinButton);
+
+    // Message Content
+    const messageDetails = document.createElement('div');
+    messageDetails.id = 'messageDetails';
+
+    if (message.image) {
+        // Image message
+        const image = document.createElement('img');
+        image.classList.add('img-thumbnail');
+        image.setAttribute('src', message.image);
+        image.setAttribute('data-toggle', 'modal');
+        image.setAttribute('data-target', '#imageModal');
+        messageDetails.appendChild(image);
+    } else {
+        // Text message
+        const messageContent = document.createElement('div');
+        messageContent.id = `message-content-${message.id}`;
+        messageContent.classList.add('message-content-area', 'mt-2');
+        messageContent.setAttribute('contenteditable', 'true');
+        messageContent.textContent = message.message;
+        messageDetails.appendChild(messageContent);
+    }
+
+    // Reactions Container
+    const reactionsDiv = document.createElement('div');
+    reactionsDiv.classList.add('reactions', 'mt-2');
+
+    // Assuming we have a predefined list of reactions
+    const reactions = ['❤️', '🔥', '👍'];
+    reactions.forEach(react => {
+        const button = document.createElement('button');
+        button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+        button.setAttribute('type', 'button');
+        button.textContent = react + ' '; // Adding reaction emoji
+
+        const span = document.createElement('span');
+        span.classList.add('reaction-count');
+        span.textContent = '0'; // Default count, should be updated based on actual data
+        button.appendChild(span);
+
+        reactionsDiv.appendChild(button);
+    });
+    
+    // Assembling the message box
+    const messageViewingArea = document.querySelector('.messageViewingArea');
+    cardBody.appendChild(userInfoAndPin);
+    cardBody.appendChild(messageDetails);
+    cardBody.appendChild(reactionsDiv);
+    messageBox.appendChild(cardBody);
+    // Check if there are existing messages
+    if (messageViewingArea.firstChild) {
+        // If there are, insert the new message box at the beginning
+        messageViewingArea.insertBefore(messageBox, messageViewingArea.firstChild);
+    } else {
+        // If there are no messages, append the new message box as usual
+        messageViewingArea.appendChild(messageBox);
+    }
+};
+
+// fetch all messages of current channel
+function fetchChannelMessages(channelId, startIdx, globalToken) {
+    console.log('fetchChannelMessages', channelId, startIdx);
+    return new Promise((resolve, reject) => {
+        const url = `message/${channelId}?start=${startIdx}`;
+        apiCall(url, null, globalToken, 'GET')
+        .then((data) => {
+            // Check if messages exist
+            if (data.messages && data.messages.length > 0) {
+                resolve(data.messages);
+            } else {
+                // Resolve with an empty array if no messages are found
+                resolve([]);
+            }
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
+};
+
+// fetch all messages of current channel
+function displayMessages(channelId, startIndex, globalToken, clearExisting = true) {
+    const messageViewingArea = document.querySelector('.messageViewingArea');
+    if (clearExisting) {
+        while (messageViewingArea.firstChild) {
+            messageViewingArea.removeChild(messageViewingArea.firstChild);
+        }
+    }
+    return fetchChannelMessages(channelId, startIndex, globalToken)
+        .then((messages) => {
+            // messages.sort((b, a) => a.sentAt - b.sentAt);
+            messages.forEach(message => {
+                messageBoxCreator(message, channelId, globalToken);
+            });
+            return messages.length;
+        })
+        .catch((error) => {
+            console.error('Error loading messages:', error);
+            screenErr(error);
+        });
+};
+
+
+function showLoadingIndicator() {
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'loadingIndicator';
+    loadingDiv.textContent = 'Loading more messages...'; // Or add a spinner here
+    document.querySelector('.messageViewingArea').appendChild(loadingDiv);
+};
+
+function hideLoadingIndicator() {
+    const loadingDiv = document.getElementById('loadingIndicator');
+    if (loadingDiv) {
+        loadingDiv.parentNode.removeChild(loadingDiv);
+    }
+};
+
+function setupInfiniteScroll(channelId, globalToken) {
+    console.log('setupInfiniteScroll', channelId);
+    let isLoading = false;
+
+    window.onscroll = () => {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+            if (!isLoading) {
+                isLoading = true;
+                showLoadingIndicator();
+                displayMessages(channelId, currentStartIndex, globalToken, false)
+                    .then((messageCount) => {
+                        currentStartIndex += messageCount;
+                        isLoading = false;
+                        hideLoadingIndicator();
+                    });
+            }
+        }
+    };
+};
+
+function processMessages(channelId, globalToken) {
+    console.log('processMessages', channelId);
+    currentStartIndex = 0;
+    displayMessages(channelId, currentStartIndex, globalToken)
+        .then(messageCount => {
+            if (messageCount > 0) {
+                setupInfiniteScroll(channelId, globalToken);
+            }
+        });
+};
+
+// channel list generator
 export function displayChannels(channelList, globalUserId, globalToken) {
     console.log(channelList);
 
@@ -118,6 +342,7 @@ export function displayChannels(channelList, globalUserId, globalToken) {
         const channelButton = document.createElement('button');
         channelButton.classList.add('btn', 'btn-sm', 'flex-grow-1');
         channelButton.textContent = channel.name;
+        channelButton.id = 'channel'+channel.id;
 
         // Apply different styles for private and public channels
         if (channel.private) {
@@ -128,17 +353,33 @@ export function displayChannels(channelList, globalUserId, globalToken) {
             publicChannelsDiv.appendChild(channelDiv);
         }
 
+        // Event listener for channel button
+        channelButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            // get current channel id
+            // show chat section
+            document.querySelector('#chatBoard').classList.remove('hidden');
+            
+            // get current channel id
+            const channelId = event.target.id.slice(7);
+            globalChannelID = channelId;
+            // get messages of current channel
+            console.log('start fetch msg:', channelId);
+            processMessages(channelId, globalToken);
+        });
 
+
+        // get info of current channel
         const infoButton = document.createElement('button');
         infoButton.classList.add('btn', 'btn-outline-info', 'btn-sm', 'ms-2', 'channelInfoBtn');
         infoButton.textContent = '...';
-        infoButton.id = channel.id;
+        infoButton.id = 'info'+channel.id;
         // Event listener for channel info button
         // disable the former event listener
         infoButton.addEventListener('click', (event) => {
             event.preventDefault();
             // get current channel id
-            const channelId = event.target.id;
+            const channelId = event.target.id.slice(4);
             globalChannelID = channelId;
             // get channel info
             const url = `channel/${channelId}`;
@@ -217,5 +458,6 @@ export function getUserInfo(uid, curToken) {
         .catch((error) => {
             screenErr(error);
             // Consider throwing an error or returning a default value
+            return null;
         });
 };
