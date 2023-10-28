@@ -411,7 +411,7 @@ document.getElementById('inviteChannelBtn').addEventListener('click', (event) =>
 });
 
 document.getElementById('userInfoBtn').addEventListener('submit', (event) => {
-
+    
 });
 
 

@@ -75,7 +75,10 @@ div.hidden {
     border: 1px solid #ddd;
 }
 
-
+.pinnedMessageViewingArea {
+    border: 2px solid black; /* Adjust the size (2px) and color (black) as needed */
+  }
+  
 .message-box {
     background: #f8f8f8;
     border-radius: 5px;

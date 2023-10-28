@@ -122,12 +122,23 @@ function messageBoxCreator(curUserId, message, channelId, curToken) {
     userNameButton.classList.add('btn', 'ml-2', 'textUser');
     userNameButton.setAttribute('type', 'button');
     userNameButton.setAttribute('data-user-id', message.sender);
+    // TODO: add event listener for user name button
 
     const senderId = message.sender;
-    // distinguish the background color of the message sender
     if (senderId == curUserId) {
+        // TODO: edit message and delete message
+
         userNameButton.classList.add('btn-outline-primary');
         // add Btn for edit and delete message
+        const editMsgBtn = document.createElement('button');
+        editMsgBtn.classList.add('btn', 'btn-sm', 'btn-outline-primary', 'editMsgBtn');
+        editMsgBtn.setAttribute('type', 'button');
+        editMsgBtn.textContent = 'Edit';
+        userInfoAndPin.appendChild(editMsgBtn);
+        editMsgBtn.id = 'edit'+message.id;
+        // Event listener for editmessagebutton
+        // TODO: edit message
+        
     }
 
     console.log('senderId', senderId);
