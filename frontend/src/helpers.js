@@ -97,7 +97,7 @@ export function getAllChannels(curToken) {
 
 // message generator
 // create div for each message
-function messageBoxCreator(message, channelId, curToken) {
+function messageBoxCreator(curUserId, message, channelId, curToken) {
     // Main message box container
     console.log('messageId', message.id);
     const messageBox = document.createElement('div');
@@ -124,6 +124,12 @@ function messageBoxCreator(message, channelId, curToken) {
     userNameButton.setAttribute('data-user-id', message.sender);
 
     const senderId = message.sender;
+    // distinguish the background color of the message sender
+    if (senderId == curUserId) {
+        userNameButton.classList.add('btn-outline-primary');
+        // add Btn for edit and delete message
+    }
+
     console.log('senderId', senderId);
     getUserInfo(senderId, curToken).then(usrInfo => {
         // Check if usrInfo is not null
@@ -160,12 +166,55 @@ function messageBoxCreator(message, channelId, curToken) {
 
     // Pin Button
     const pinButton = document.createElement('button');
-    pinButton.classList.add('btn', 'btn-outline-secondary', 'btn-sm');
+    if (message.pinned) {
+        pinButton.classList.add('btn', 'btn-sm', 'btn-outline-success', 'pinBtn');
+    } else {
+        pinButton.classList.add('btn', 'btn-sm', 'btn-outline-secondary', 'pinBtn');
+    }
     pinButton.setAttribute('type', 'button');
     const pinIcon = document.createElement('i');
     pinIcon.classList.add('bi', 'bi-pin-fill');
     pinButton.appendChild(pinIcon);
     userInfoAndPin.appendChild(pinButton);
+    pinButton.id = 'pin'+message.id;
+
+
+    // Event listener for pin button
+    pinButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        // get current message id
+        const curMessageId = event.target.id.slice(3);
+        // pin message
+        if (message.pinned == false) {
+            const url = `message/pin/${channelId}/${curMessageId}`;
+            apiCall(url, null, curToken, 'POST')
+            .then((data) => {
+                // Handle the success response here
+                console.log('pinMessage', data);
+                // change pin icon
+                pinButton.classList.remove('btn-outline-secondary');
+                pinButton.classList.add('btn-outline-success');
+                // get current channel messages again
+                processMessages(curUserId, channelId, curToken);
+
+            }).catch((error) => {
+                screenErr(error);
+            });
+        } else {
+            const url = `message/unpin/${channelId}/${curMessageId}`;
+            apiCall(url, null, curToken, 'POST')
+            .then((data) => {
+                // Handle the success response here
+                console.log('unpinMessage', data);
+                // change pin icon
+                pinButton.classList.remove('btn-outline-success');
+                pinButton.classList.add('btn-outline-secondary');
+                processMessages(curUserId, channelId, curToken);
+            }).catch((error) => {
+                screenErr(error);
+            });
+        }
+    });
 
     // Message Content
     const messageDetails = document.createElement('div');
@@ -215,14 +264,7 @@ function messageBoxCreator(message, channelId, curToken) {
     cardBody.appendChild(messageDetails);
     cardBody.appendChild(reactionsDiv);
     messageBox.appendChild(cardBody);
-    // Check if there are existing messages
-    if (messageViewingArea.firstChild) {
-        // If there are, insert the new message box at the beginning
-        messageViewingArea.insertBefore(messageBox, messageViewingArea.firstChild);
-    } else {
-        // If there are no messages, append the new message box as usual
-        messageViewingArea.appendChild(messageBox);
-    }
+    return messageBox;
 };
 
 // fetch all messages of current channel
@@ -247,18 +289,43 @@ function fetchChannelMessages(channelId, startIdx, globalToken) {
 };
 
 // fetch all messages of current channel
-function displayMessages(channelId, startIndex, globalToken, clearExisting = true) {
+function displayMessages(curUserID, channelId, startIndex, globalToken, clearExisting = true) {
     const messageViewingArea = document.querySelector('.messageViewingArea');
+    const pinnedMessageViewingArea = document.querySelector('.pinnedMessageViewingArea');
     if (clearExisting) {
         while (messageViewingArea.firstChild) {
             messageViewingArea.removeChild(messageViewingArea.firstChild);
+        }
+        while (pinnedMessageViewingArea.firstChild) {
+            pinnedMessageViewingArea.removeChild(pinnedMessageViewingArea.firstChild);
         }
     }
     return fetchChannelMessages(channelId, startIndex, globalToken)
         .then((messages) => {
             // messages.sort((b, a) => a.sentAt - b.sentAt);
             messages.forEach(message => {
-                messageBoxCreator(message, channelId, globalToken);
+                // create div for each message
+                let currentMessage = messageBoxCreator(curUserID, message, channelId, globalToken);
+                const messageViewingArea = document.querySelector('.messageViewingArea');
+                const pinnedMessageViewingArea = document.querySelector('.pinnedMessageViewingArea');
+
+                // move the pinned message to the pinnedMessageViewingArea
+                if (message.pinned){
+                    if (pinnedMessageViewingArea.firstChild) {
+                        pinnedMessageViewingArea.insertBefore(currentMessage, pinnedMessageViewingArea.firstChild);
+                    }
+                    else {
+                        pinnedMessageViewingArea.appendChild(currentMessage);
+                    }
+                } else {
+                    if (messageViewingArea.firstChild) {
+                        // If there are, insert the new message box at the beginning
+                        messageViewingArea.insertBefore(currentMessage, messageViewingArea.firstChild);
+                    } else {
+                        // If there are no messages, append the new message box as usual
+                        messageViewingArea.appendChild(currentMessage);
+                    }
+                }
             });
             return messages.length;
         })
@@ -283,8 +350,8 @@ function hideLoadingIndicator() {
     }
 };
 
-function setupInfiniteScroll(channelId, globalToken) {
-    console.log('setupInfiniteScroll', channelId);
+function setupInfiniteScroll(curUserID, channelId, globalToken) {
+    console.log('setup Infinite Scroll', channelId);
     let isLoading = false;
 
     window.onscroll = () => {
@@ -292,7 +359,7 @@ function setupInfiniteScroll(channelId, globalToken) {
             if (!isLoading) {
                 isLoading = true;
                 showLoadingIndicator();
-                displayMessages(channelId, currentStartIndex, globalToken, false)
+                displayMessages(curUserID, channelId, currentStartIndex, globalToken, false)
                     .then((messageCount) => {
                         currentStartIndex += messageCount;
                         isLoading = false;
@@ -303,13 +370,13 @@ function setupInfiniteScroll(channelId, globalToken) {
     };
 };
 
-function processMessages(channelId, globalToken) {
-    console.log('processMessages', channelId);
+export function processMessages(curUserID, channelId, globalToken) {
+    console.log('process Messages', channelId);
     currentStartIndex = 0;
-    displayMessages(channelId, currentStartIndex, globalToken)
+    displayMessages(curUserID, channelId, currentStartIndex, globalToken)
         .then(messageCount => {
             if (messageCount > 0) {
-                setupInfiniteScroll(channelId, globalToken);
+                setupInfiniteScroll(curUserID, channelId, globalToken);
             }
         });
 };
@@ -365,7 +432,7 @@ export function displayChannels(channelList, globalUserId, globalToken) {
             globalChannelID = channelId;
             // get messages of current channel
             console.log('start fetch msg:', channelId);
-            processMessages(channelId, globalToken);
+            processMessages(globalUserId, channelId, globalToken);
         });
 
 

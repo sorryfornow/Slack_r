@@ -1,6 +1,6 @@
 import { BACKEND_PORT } from './config.js';
 // A helper you may want to use when uploading new images to the server.
-import { fileToDataUrl, globalChannelID, screenErr, apiCall, getAllChannels, displayChannels} from './helpers.js';
+import { fileToDataUrl, globalChannelID, screenErr, apiCall, getAllChannels, displayChannels, processMessages} from './helpers.js';
 
 console.log('Let\'s go!');
 
@@ -297,6 +297,8 @@ document.getElementById('joinChannelBtn').addEventListener('click', function(eve
     });
 }); // end of catch
 
+
+
 // enable buttons of channel info events
 // edit
 document.getElementById('editChannelBtn').addEventListener('click', function() {
@@ -407,5 +409,17 @@ document.getElementById('inviteChannelBtn').addEventListener('click', (event) =>
     const url = `channel/${channelId}/invite`;
     // TODO: raise a Modal
 });
+
+document.getElementById('userInfoBtn').addEventListener('submit', (event) => {
+
+});
+
+
+// message 
+
+
+
+
+
 
 

@@ -147,7 +147,7 @@
       <!-- Sidebar showing the list of channels -->
       <div class="sidebar d-flex flex-column bg-light border-right">
         <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
-            <h2 class="mb-0 flex-grow-1">Channels</h2>
+            <h2 class="mb-0 flex-grow-1">Slackr</h2>
             <!-- user's info button  -->
             <button type="button" class="btn btn-outline-info btn-sm ms-2" id="userInfoBtn">Me</button>
             <button class="btn btn-primary btn-sm ms-2 sidebarAddChannel">+</button>
@@ -257,41 +257,36 @@
       <!-- Chat section -->
       <div class="chat hidden" id="chatBoard">
         <!-- Message Viewing Area -->
+
+        <!-- Pinned Messages Area -->
+        <div class="pinnedMessageViewingArea">
+          <!-- Pinned messages will be displayed here -->
+        </div>
+
         <div class="messageViewingArea">
           <!-- Messages will be displayed here -->
-          <!-- example message -->
-          
-
-        </div>
-      
-        <!-- Pinned Messages Area -->
-        <div id="pinnedMessages">
-            <!-- Pinned messages will be displayed here -->
         </div>
 
+        <div id="messagePhotoUploadContainer" class="mb-3">
+          <form id="combinedForm">
+              <div class="input-group">
+                  <!-- Text Message Input -->
+                  <input type="text" class="form-control" placeholder="Type a message..." id="messageInput">
+                  <!-- Photo Upload Input - Hidden initially -->
+                  <input type="file" id="photoInput" name="photo" accept="image/*" style="display: none;">
+                  <label for="photoInput" class="input-group-text" aria-label="Upload image">
+                      <i class="bi bi-image-fill"></i> <!-- Bootstrap Icons: Image Icon -->
+                  </label>
+                  <!-- Send Button -->
+                  <button class="btn btn-primary" type="submit" id="messageSendBtn" disabled>
+                      <i class="bi bi-send-fill"></i> <!-- Bootstrap Icons: Send Icon -->
+                  </button>
+              </div>
+          </form>
+        </div>
 
-
-       <div id="messagePhotoUploadContainer" class="mb-3">
-        <form id="combinedForm">
-            <div class="input-group">
-                <!-- Text Message Input -->
-                <input type="text" class="form-control" placeholder="Type a message..." id="messageInput">
-                <!-- Photo Upload Input - Hidden initially -->
-                <input type="file" id="photoInput" name="photo" accept="image/*" style="display: none;">
-                <label for="photoInput" class="input-group-text" aria-label="Upload image">
-                    <i class="bi bi-image-fill"></i> <!-- Bootstrap Icons: Image Icon -->
-                </label>
-                <!-- Send Button -->
-                <button class="btn btn-primary" type="submit" id="messageSendBtn" disabled>
-                    <i class="bi bi-send-fill"></i> <!-- Bootstrap Icons: Send Icon -->
-                </button>
-            </div>
-        </form>
       </div>
     
-
-
-
     </div>  
 
   </main>
