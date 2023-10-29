@@ -126,6 +126,7 @@ function messageBoxCreator(curUserId, message, channelId, curToken) {
 
     const senderId = message.sender;
     if (senderId == curUserId) {
+        document.getElementById('editUserInfoBtn').disabled = false;
         // TODO: edit message and delete message
 
         userNameButton.classList.add('btn-outline-primary');
@@ -138,7 +139,10 @@ function messageBoxCreator(curUserId, message, channelId, curToken) {
         editMsgBtn.id = 'edit'+message.id;
         // Event listener for editmessagebutton
         // TODO: edit message
-        
+
+    } else {
+        // disable editUserInfoBtn
+        document.getElementById('editUserInfoBtn').disabled = true;
     }
 
     console.log('senderId', senderId);
@@ -259,8 +263,10 @@ function messageBoxCreator(curUserId, message, channelId, curToken) {
         const button = document.createElement('button');
         button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
         button.setAttribute('type', 'button');
+        button.id = react+'Btn';
         button.textContent = react + ' '; // Adding reaction emoji
-
+        // TODO: backend
+        
         const span = document.createElement('span');
         span.classList.add('reaction-count');
         span.textContent = '0'; // Default count, should be updated based on actual data

@@ -274,6 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Event listener for join Channel button
 document.getElementById('joinChannelBtn').addEventListener('click', function(event) {
     event.preventDefault(); // Prevent default form submission
+    const curModal = document.getElementById('joinModal');
     let channelId = globalChannelID;
     const url = `channel/${channelId}/join`;
     apiCall(url, null, globalToken, 'POST')
@@ -282,10 +283,17 @@ document.getElementById('joinChannelBtn').addEventListener('click', function(eve
         // disable the join button and show a success message in div
         document.getElementById('joinChannelBtn').disabled = true;
         document.getElementById('joinChannelBtn').textContent = 'Joined';
+        // remove the former message div
+        const joinTextExist = curModal.querySelector('#joinSuccessText');
+        if (joinTextExist) {
+            joinTextExist.remove();
+        }
         // new a message div
         const joinText = document.createElement('div');
         joinText.classList.add('text-success');
+        joinText.id = 'joinSuccessText';
         joinText.textContent = 'You have joined this channel';
+        // append message
         const infoJoinText = document.getElementById('joinText');
         infoJoinText.appendChild(joinText);
         // get all channels again
@@ -410,8 +418,113 @@ document.getElementById('inviteChannelBtn').addEventListener('click', (event) =>
     // TODO: raise a Modal
 });
 
-document.getElementById('userInfoBtn').addEventListener('submit', (event) => {
-    
+// show current user's info
+document.getElementById('userInfoBtn').addEventListener('click', (event) => {
+    event.preventDefault(); // Prevent default form submission
+    // raise modal
+    console.log('show user info');
+    const url = `user/${globalUserId}`;
+    apiCall(url, null, globalToken, 'GET')
+    .then((data) => {
+        // Handle the success response here
+        console.log('userInfo', data);
+        // display channels
+        const { name, email, bio, image } = data;
+        document.getElementById('userModalName').textContent = name;
+        document.getElementById('userModalEmail').textContent = email;
+        document.getElementById('userModalBio').textContent = bio;
+        document.getElementById('editUserInfoBtn').disabled = false;
+        if (image == null) {
+            document.getElementById('userModalImage').alt = 'No Image';
+        } else {
+            document.getElementById('userModalImage').src = image;
+        }
+        const userInfoModal = new bootstrap.Modal(document.getElementById('userInfoModal'));
+        userInfoModal.show();
+
+        // enable edit
+        document.getElementById('editUserInfoBtn').addEventListener('click', (event) => {
+            event.preventDefault();
+            // raise modal
+            document.getElementById('userEmailEdit').value = email;
+            document.getElementById('userNameEdit').value = name;
+            document.getElementById('userBioEdit').value = bio;
+            const editUserInfoModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+            // remove previous info
+            const nextModal = document.getElementById('editProfileModal');
+            const warningDiv = nextModal.querySelector('#editProfileWarning');
+            if (warningDiv) {
+                warningDiv.remove();
+            }
+            userInfoModal.hide();
+            editUserInfoModal.show();
+        });
+
+    }).catch((error) => {
+        screenErr(error);
+    });
+
+});
+
+// update user profile
+document.getElementById('editProfileModal').addEventListener('submit', (event) => {
+    event.preventDefault(); // Prevents the default form submission action
+
+    const curModal = document.getElementById('editProfileModal');
+    // Check if the div with id 'editProfileWarning' exists and delete it
+    const warningDiv = document.querySelector('#editProfileWarning');
+    if (warningDiv) {
+        warningDiv.remove();
+    }
+
+    const newPassword = document.getElementById('userPasswordEdit').value;
+    const confirmPassword = document.getElementById('userPasswordConfirmEdit').value;
+
+    // Check if the new password and confirm password are matching
+    if (newPassword !== confirmPassword) {
+        const element = document.createElement('div');
+        element.textContent = 'Password lines are not matching';
+        element.style.color = 'red';
+        element.id = 'editProfileWarning';
+        curModal.querySelector('.modal-body').appendChild(element); 
+        // Append the warning in modal body
+        return;
+    }
+
+    // Collecting other form data
+    const email = document.getElementById('userEmailEdit').value;
+    const name = document.getElementById('userNameEdit').value;
+    const bio = document.getElementById('userBioEdit').value;
+    console.log(email, name, bio);
+
+    const password = newPassword;
+    if (email == '' || name == '' ) {
+        const element = document.createElement('div');
+        element.textContent = 'Email or name is empty';
+        element.style.color = 'red';
+        element.id = 'editProfileWarning';
+        curModal.querySelector('.modal-body').appendChild(element); // Append the warning in modal body
+        return;
+    }
+    // Handle the file input for the image if necessary
+    const imageFile = document.getElementById('userImageEdit').files[0];
+    const image = imageFile ? imageFile : "";
+
+    // call api to update
+    const data = {email, password, name, bio, image};
+    console.log(data);
+    const url = `user`;
+    apiCall(url, data, globalToken, 'PUT')
+    .then(() => {
+        const element = document.createElement('div');
+        element.textContent = 'User Profile Updated';
+        element.style.color = 'Green';
+        element.id = 'editProfileWarning';
+        // Append the warning in modal body
+        curModal.querySelector('.modal-body').appendChild(element);
+    }).catch((error) => {
+        screenErr(error);
+    });
 });
 
 

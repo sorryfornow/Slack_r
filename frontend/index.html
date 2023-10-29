@@ -55,6 +55,74 @@
       </div>
     </div>
     
+    <!-- User Info Modal -->
+    <div class="modal" id="userInfoModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">User Information</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <img id="userModalImage" src="" alt="User Image" class="img-thumbnail">
+            <p><strong>Name:</strong> <span id="userModalName"></span></p>
+            <p><strong>Email:</strong> <span id="userModalEmail"></span></p>
+            <p><strong>Bio:</strong> <span id="userModalBio"></span></p>
+          </div>
+          <div class="modal-footer">
+            <button id="editUserInfoBtn" type="button" class="btn btn-primary">Edit</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="editProfileForm">
+              <div class="mb-3">
+                <label for="userEmail" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="userEmailEdit" placeholder="name@example.com">
+              </div>
+              <div class="mb-3">
+                <label for="userPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" id="userPasswordEdit" placeholder="New Password">
+              </div>
+              <div class="mb-3">
+                <label for="userPasswordConfirm" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="userPasswordConfirmEdit" placeholder="Confirm New Password">
+              </div>
+              <div class="mb-3">
+                <label for="userName" class="form-label">Name</label>
+                <input type="text" class="form-control" id="userNameEdit" placeholder="Your Name">
+              </div>
+              <div class="mb-3">
+                <label for="userBio" class="form-label">Bio</label>
+                <textarea class="form-control" id="userBioEdit" rows="3"></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="userImage" class="form-label">Profile Image</label>
+                <input class="form-control" type="file" id="userImageEdit">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" form="editProfileForm" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
 
     <div class="modal" tabindex="-1" id="errorModal">
       <div class="modal-dialog">
@@ -230,29 +298,7 @@
       </div>      
 
 
-      <!-- User Info Modal -->
-      <div class="modal" id="userInfoModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">User Information</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <img id="userModalImage" src="" alt="User Image" class="img-thumbnail">
-              <p><strong>Name:</strong> <span id="userModalName"></span></p>
-              <p><strong>Email:</strong> <span id="userModalEmail"></span></p>
-              <p><strong>Bio:</strong> <span id="userModalBio"></span></p>
-            </div>
-            <div class="modal-footer">
-              <button id="editUserInfoBtn" type="button" class="btn btn-primary">Edit</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
+
 
   
       <!-- Chat section -->
