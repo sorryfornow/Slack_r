@@ -628,3 +628,28 @@ export function getUserInfo(uid, curToken) {
             return null;
         });
 };
+
+export function getUserInfoByEmail(emailInput, curToken) {
+    const url = `user`;
+    // Return the promise
+    emailInput = String(emailInput);
+    return apiCall(url, null, curToken, 'GET')
+        .then((data) => {
+            console.log('get all user', data);
+            let allUsers = data.users;
+            // find the user with email
+            for (let user of allUsers) {
+                console.log('Current user:', user);
+                if (user && user.email === emailInput) {
+                    return user;
+                }
+            }
+            // If no user is found
+            return null;
+        })
+        .catch((error) => {
+            screenErr(error);
+            // Consider throwing an error or returning a default value
+            return null;
+        });
+}

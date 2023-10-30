@@ -86,7 +86,28 @@
       "members": [
         34409
       ],
-      "messages": []
+      "messages": [
+        {
+          "id": 47,
+          "message": "Yes I am Siqing",
+          "sender": 34409,
+          "sentAt": "2023-10-30T06:11:49.387Z",
+          "edited": false,
+          "editedAt": null,
+          "pinned": false,
+          "reacts": []
+        },
+        {
+          "id": 46,
+          "message": "Hi, I am Siqing",
+          "sender": 34409,
+          "sentAt": "2023-10-30T06:11:45.384Z",
+          "edited": false,
+          "editedAt": null,
+          "pinned": false,
+          "reacts": []
+        }
+      ]
     },
     "640194": {
       "name": "COMP6080",
@@ -121,12 +142,12 @@
       ],
       "messages": [
         {
-          "id": 44,
-          "message": "Hi, I am Siqing",
+          "id": 45,
+          "message": "Hi, I am Siqing Zhang",
           "sender": 34409,
-          "sentAt": "2023-10-30T00:50:55.704Z",
-          "edited": false,
-          "editedAt": null,
+          "sentAt": "2023-10-30T04:38:22.201Z",
+          "edited": true,
+          "editedAt": "2023-10-30T04:38:28.833Z",
           "pinned": false,
           "reacts": []
         },
@@ -559,9 +580,21 @@
       "description": "Yes this is my Private one",
       "createdAt": "2023-10-26T22:06:39.324Z",
       "members": [
-        34409
+        34409,
+        15272
       ],
-      "messages": []
+      "messages": [
+        {
+          "id": 48,
+          "message": "Hi, welcome",
+          "sender": 34409,
+          "sentAt": "2023-10-30T06:32:44.746Z",
+          "edited": false,
+          "editedAt": null,
+          "pinned": false,
+          "reacts": []
+        }
+      ]
     },
     "926701": {
       "name": "COMP Siqing Private",
@@ -600,5 +633,5 @@
       "messages": []
     }
   },
-  "nextMessageId": 45
+  "nextMessageId": 49
 }

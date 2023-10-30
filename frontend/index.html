@@ -329,6 +329,32 @@
         </div>
       </div>      
 
+      <!-- Invite Users Modal -->
+      <div class="modal fade" id="inviteModal" tabindex="-1" aria-labelledby="addUsersModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addUsersModalLabel">Add Users</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <!-- Search Field -->
+              <input type="text" id="userSearchInput" class="form-control mb-3" placeholder="Search user email...">
+              <button type="button" class="btn btn-primary mb-3" id="userSearchBtn">Search</button>
+              <!-- Search Results -->
+              <!-- <div id="searchResults" class="list-group mb-3"></div> -->
+              <!-- Selected Users -->
+              <h6>Selected Users:</h6>
+              <div id="selectedUsers" class="list-group"></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="addUsersBtn">Add Users</button>
+            </div>
+            <div id="inviteResults" class="list-group"></div>
+          </div>
+        </div>
+      </div>
 
 
 

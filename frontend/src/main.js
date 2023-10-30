@@ -1,6 +1,6 @@
 import { BACKEND_PORT } from './config.js';
 // A helper you may want to use when uploading new images to the server.
-import { fileToDataUrl, globalChannelID, screenErr, apiCall, getAllChannels, displayChannels, processMessages} from './helpers.js';
+import { fileToDataUrl, globalChannelID, screenErr, apiCall, getAllChannels, displayChannels, processMessages, getUserInfoByEmail} from './helpers.js';
 
 console.log('Let\'s go!');
 
@@ -164,8 +164,8 @@ signinForm.addEventListener('submit', (event) => {
 signupForm.addEventListener('submit', (event) => {
     event.preventDefault();
     // if the Email or password is empty, an appropriate error should appear on the screen
-    const email = signupForm.elements["emailSignup"].value;
-    const name = signupForm.elements["nameSignup"].value;
+    const email = signupForm.elements["emailSignup"].value.trim();
+    const name = signupForm.elements["nameSignup"].value.trim();
     const password = signupForm.elements["passwordSignup"].value;
     const password2 = signupForm.elements["passwordConfirm"].value;
 
@@ -173,6 +173,12 @@ signupForm.addEventListener('submit', (event) => {
     const regex = /\S+@\S+\.\S+/;
     if (!regex.test(email)) {
         screenErr('Email is not valid');
+        return;
+    }
+    // regex password that cannot contain space
+    const regex2 = /\s/;
+    if (regex2.test(password)) {
+        screenErr('Password cannot contain space');
         return;
     }
     if (email == '' || password == '' || password2 == '' || name == '') {
@@ -412,15 +418,113 @@ document.getElementById('channelSearchForm').addEventListener('submit', (event) 
     });
 });
 
-// TODO invite friend
+// invite friend
 document.getElementById('inviteChannelBtn').addEventListener('click', (event) => {
     event.preventDefault(); // Prevent default form submission
     // Get the current channel ID from the input
-    const currentChannelID = globalChannelID;
-    // globalChannelID = currentChannelID; // cannot assign const var
-    let channelId = currentChannelID;
-    const url = `channel/${channelId}/invite`;
-    // TODO: raise a Modal
+    let channelId = globalChannelID;
+    // const url = `channel/${channelId}/invite`;
+    // raise a Modal
+    const inviteModal = new bootstrap.Modal(document.getElementById('inviteModal'));
+    const inviteResults = document.getElementById('inviteResults');
+    while (inviteResults.firstChild) {
+        inviteResults.removeChild(inviteResults.firstChild);
+    }
+    if (inviteModal._isShown) {
+        inviteModal.hide();
+    }
+    inviteModal.show();
+    // search user
+    const userSearchBtn = document.getElementById('userSearchBtn');
+
+    // get all users selected
+    const selectedUsers = document.getElementById('selectedUsers');
+    while (selectedUsers.firstChild) {
+        selectedUsers.removeChild(selectedUsers.firstChild);
+    }
+
+    userSearchBtn.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent default form submission
+        
+        let userSearchInput = document.getElementById('userSearchInput').value.trim();
+        if (userSearchInput == '') {
+            screenErr('Please select a user');
+            return;
+        }
+        console.log('Search:', userSearchInput);
+        getUserInfoByEmail(userSearchInput, globalToken).then((usr) => {
+            // add user to invite list
+            // create a new div
+            const { id: userId, email: userEmail } = usr;
+            // TODO: BUG: userEmail undefined 
+            console.log('userEmail:', userEmail);
+
+            // console.log('userInfo to div', data);
+            const selectedUsers = document.getElementById('selectedUsers');
+            const userDiv = document.createElement('div');
+            userDiv.classList.add('userInviteDiv');
+            // add email to div 
+            userDiv.textContent = userEmail;
+            console.log('userDiv', userDiv);
+            userDiv.id = 'invite'+userId;
+            selectedUsers.appendChild(userDiv);
+        }).catch((error) => {
+            screenErr(error);
+        });
+        
+    });
+});
+
+// add selected users
+document.getElementById('addUsersBtn').addEventListener('click', (event) => {
+    // addUsersBtn
+    const inviteResults = document.getElementById('inviteResults');
+    while (inviteResults.firstChild) {
+        inviteResults.removeChild(inviteResults.firstChild);
+    }
+
+    let channelId = globalChannelID;
+    let userEmailArray = [];
+    // get all users selected
+    const selectedUsers = document.getElementById('selectedUsers');
+    const userDivs = selectedUsers.querySelectorAll('.userInviteDiv');
+    userDivs.forEach((div) => {
+        const userEmail = div.textContent;
+        console.log('userDivs', userEmail);
+        userEmailArray.push(userEmail);
+    });
+    console.log(userEmailArray);
+    // for each user email, send invite
+    userEmailArray.forEach((email) => {
+        // TODO find user id by email
+        getUserInfoByEmail(email, globalToken).then((usr) => {
+            console.log('userInfo:', usr);
+            if (usr == null) {
+                screenErr('User not found');
+                return;
+            }
+            
+            const { id: userId, email: userEmail } = usr;
+            const dataInput = { userId };
+            const url = `channel/${channelId}/invite`;
+            apiCall(url, dataInput, globalToken, 'POST')
+            .then(() => {
+                console.log('invite success');
+                // get all channels again
+                // create success message
+                const successInviteDiv = document.createElement('div');
+                successInviteDiv.classList.add('text-success');
+                successInviteDiv.textContent = 'Invite success: '+userEmail+' has joined this channel';
+                const inviteResults = document.getElementById('inviteResults');
+                inviteResults.appendChild(successInviteDiv);
+                // TODO new joined post in channel page
+            }).catch((error) => {
+                screenErr(error);
+            });
+        }).catch((error) => {
+            screenErr(error);
+        });
+    });
 });
 
 // show current user's info
