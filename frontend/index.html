@@ -54,7 +54,39 @@
         </div>
       </div>
     </div>
-    
+
+    <!-- Edit Message Modal -->
+    <div class="modal fade" id="editMessageModal" tabindex="-1" aria-labelledby="editMessageModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="editMessageModalLabel">Edit Message</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <form id="editMessageForm">
+                      <div class="mb-3">
+                          <label for="messageTextEdit" class="form-label">Message</label>
+                          <textarea class="form-control" id="messageTextEdit" rows="3"></textarea>
+                      </div>
+                      <div class="mb-3">
+                          <label for="messageImageEdit" class="form-label">Image</label>
+                          <input class="form-control" type="file" id="messageImageEdit">
+                          <div class="mt-2">
+                              <img id="currentMessageImage" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==" alt="Current Image" class="img-thumbnail">
+                          </div>
+                      </div>
+                  </form>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" form="editMessageForm" class="btn btn-primary" id="messageChangeBtn">Save Changes</button>
+              </div>
+          </div>
+      </div>
+    </div>
+
+
     <!-- User Info Modal -->
     <div class="modal" id="userInfoModal" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
@@ -322,12 +354,13 @@
                   <!-- Photo Upload Input - Hidden initially -->
                   <input type="file" id="photoInput" name="photo" accept="image/*" style="display: none;">
                   <label for="photoInput" class="input-group-text" aria-label="Upload image">
-                      <i class="bi bi-image-fill"></i> <!-- Bootstrap Icons: Image Icon -->
+                      <i class="bi bi-image-fill">Photo</i> <!-- Bootstrap Icons: Image Icon -->
                   </label>
                   <!-- Send Button -->
                   <button class="btn btn-primary" type="submit" id="messageSendBtn" disabled>
-                      <i class="bi bi-send-fill"></i> <!-- Bootstrap Icons: Send Icon -->
+                      <i class="bi bi-send-fill">Send</i> <!-- Bootstrap Icons: Send Icon -->
                   </button>
+
               </div>
           </form>
         </div>

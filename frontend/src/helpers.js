@@ -128,18 +128,91 @@ function messageBoxCreator(curUserId, message, channelId, curToken) {
     if (senderId == curUserId) {
         document.getElementById('editUserInfoBtn').disabled = false;
         // TODO: edit message and delete message
-
-        userNameButton.classList.add('btn-outline-primary');
         // add Btn for edit and delete message
         const editMsgBtn = document.createElement('button');
         editMsgBtn.classList.add('btn', 'btn-sm', 'btn-outline-primary', 'editMsgBtn');
         editMsgBtn.setAttribute('type', 'button');
         editMsgBtn.textContent = 'Edit';
-        userInfoAndPin.appendChild(editMsgBtn);
         editMsgBtn.id = 'edit'+message.id;
-        // Event listener for editmessagebutton
-        // TODO: edit message
+        // append editMsgBtn to div
+        cardBody.appendChild(editMsgBtn);
 
+        const deleteMsgBtn = document.createElement('button');
+        deleteMsgBtn.classList.add('btn', 'btn-sm', 'btn-outline-danger', 'deleteMsgBtn');
+        deleteMsgBtn.setAttribute('type', 'button');
+        deleteMsgBtn.textContent = 'Delete';
+        deleteMsgBtn.id = 'delete'+message.id;
+        // append deleteMsgBtn to div
+        cardBody.appendChild(deleteMsgBtn);
+        // Event listener for editmessagebutton
+        // edit message
+        deleteMsgBtn.addEventListener('click', (event) => {
+            const url_delete = `message/${channelId}/${message.id}`;
+            apiCall(url_delete, null, curToken, 'DELETE')
+            .then((data) => {
+            }).then(() => {
+                // get current channel messages again
+                processMessages(curUserId, channelId, curToken);
+            }).catch((error) => {
+                screenErr(error);
+            })
+        });
+
+        editMsgBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            document.getElementById('messageTextEdit').textContent = message.message;
+            // if warning div exist
+            const warningDivEdit = document.getElementById('warningDivEdit');
+            if (warningDivEdit) {
+                warningDivEdit.remove();
+            }
+            // show the modal
+            const editMessageModal = new bootstrap.Modal(document.getElementById('editMessageModal'));
+            editMessageModal.show();
+
+            // Event listener for edit message button in editMessageModal
+            const messageChangeBtn = document.getElementById('messageChangeBtn');
+            messageChangeBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                const messageText = document.getElementById('messageTextEdit').value;
+                const messageImageInput = document.getElementById('messageImageEdit');
+                let imageFile = null;
+
+                // Check if a new image was uploaded
+                if (messageImageInput.files && messageImageInput.files[0]) {
+                    imageFile = messageImageInput.files[0];
+                }
+                if (messageText == '' && imageFile == null) {
+                    const newWarningDivEdit = document.createElement('div');
+                    newWarningDivEdit.classList.add('alert', 'alert-warning');
+                    newWarningDivEdit.textContent = 'Please enter the changed message!';
+                    newWarningDivEdit.id = 'warningDivEdit';
+                    document.getElementById('editMessageModal').appendChild(newWarningDivEdit);
+                    return;
+                }
+                // send request to backend
+                const url_edit = `message/${channelId}/${message.id}`;
+
+                let messageData = { message: messageText, image: imageFile };
+                if (imageFile == null) {
+                    messageData = { message: messageText };
+                } else if (messageText == '') {
+                    messageData = { image: imageFile };
+                }
+                
+                apiCall(url_edit, messageData, curToken, 'PUT')
+                .then((data) => {
+                    // Handle the success response here
+                    console.log('editMessage', data);
+                    // change pin icon
+                    // get current channel messages again
+                    processMessages(curUserId, channelId, curToken);
+                }).catch((error) => {
+                    screenErr(error);
+                });
+
+            });
+        });
     } else {
         // disable editUserInfoBtn
         document.getElementById('editUserInfoBtn').disabled = true;
@@ -265,7 +338,7 @@ function messageBoxCreator(curUserId, message, channelId, curToken) {
         button.setAttribute('type', 'button');
         button.id = react+'Btn';
         button.textContent = react + ' '; // Adding reaction emoji
-        // TODO: backend
+        // TODO: backend increment reaction count
         
         const span = document.createElement('span');
         span.classList.add('reaction-count');
@@ -328,6 +401,10 @@ function displayMessages(curUserID, channelId, startIndex, globalToken, clearExi
 
                 // move the pinned message to the pinnedMessageViewingArea
                 if (message.pinned){
+                    // if pinnedMessageViewingArea contains current message, remove it
+                    if (document.getElementById(`message${message.id}+${channelId}`)) {
+                        document.getElementById(`message${message.id}+${channelId}`).remove();
+                    }
                     if (pinnedMessageViewingArea.firstChild) {
                         pinnedMessageViewingArea.insertBefore(currentMessage, pinnedMessageViewingArea.firstChild);
                     }
@@ -447,6 +524,9 @@ export function displayChannels(channelList, globalUserId, globalToken) {
             // get current channel id
             const channelId = event.target.id.slice(7);
             globalChannelID = channelId;
+            // show the message input area
+            const messagePhotoUploadContainer = document.getElementById('messagePhotoUploadContainer');
+            messagePhotoUploadContainer.classList.remove('hidden');
             // get messages of current channel
             console.log('start fetch msg:', channelId);
             processMessages(globalUserId, channelId, globalToken);

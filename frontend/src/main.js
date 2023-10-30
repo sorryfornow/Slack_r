@@ -29,6 +29,12 @@ if (globalToken && globalUserId) {
 }
 
 
+if (globalChannelID == null) {
+    const messageInputContainer = document.getElementById('messagePhotoUploadContainer');
+    messagePhotoUploadContainer.classList.add('hidden');
+}
+
+
 Array.from(signinForm).forEach(element => {
     // save the value of the input element to local storage
     // get the value of the input element from local storage when the page is loaded
@@ -407,7 +413,7 @@ document.getElementById('channelSearchForm').addEventListener('submit', (event) 
     });
 });
 
-// TODO invite
+// TODO invite friend
 document.getElementById('inviteChannelBtn').addEventListener('click', (event) => {
     event.preventDefault(); // Prevent default form submission
     // Get the current channel ID from the input
@@ -528,11 +534,41 @@ document.getElementById('editProfileModal').addEventListener('submit', (event) =
 });
 
 
-// message 
+// message send
+document.getElementById('messagePhotoUploadContainer').addEventListener('submit', (event) => {
+    event.preventDefault(); // Prevent default form submission
+    // Get the current channel ID from the input
+    const message = document.getElementById('messageInput').value;
+    const image = document.getElementById('photoInput').files[0];
+    // Clear the form fields after submission
+    document.getElementById('messageInput').value = '';
+    if (document.getElementById('photoInput').value) {
+        document.getElementById('photoInput').value = '';
+    }
 
+    const channelId = globalChannelID;
+    const url = `message/${channelId}`;
+    const data = { message, image };
+    apiCall(url, data, globalToken, 'POST')
+    .then((data) => {
+        // Handle the success response here
+        console.log('message', data);
+        // display channels
+        processMessages(globalUserId, channelId, globalToken);
+    }).catch((error) => {
+        screenErr(error);
+    });
 
+});
 
+// Additional Event Listeners for enabling/disabling the Send button
+document.getElementById('messageInput').addEventListener('input', () => {
+    const message = document.getElementById('messageInput').value;
+    document.getElementById('messageSendBtn').disabled = !message.trim();
+    // only space message is not allowed
+});
 
-
-
-
+document.getElementById('photoInput').addEventListener('change', () => {
+    const hasPhoto = !!document.getElementById('photoInput').files.length;
+    document.getElementById('messageSendBtn').disabled = !hasPhoto;
+});
