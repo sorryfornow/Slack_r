@@ -456,7 +456,6 @@ document.getElementById('inviteChannelBtn').addEventListener('click', (event) =>
             // add user to invite list
             // create a new div
             const { id: userId, email: userEmail } = usr;
-            // TODO: BUG: userEmail undefined 
             console.log('userEmail:', userEmail);
 
             // console.log('userInfo to div', data);
@@ -496,7 +495,6 @@ document.getElementById('addUsersBtn').addEventListener('click', (event) => {
     console.log(userEmailArray);
     // for each user email, send invite
     userEmailArray.forEach((email) => {
-        // TODO find user id by email
         getUserInfoByEmail(email, globalToken).then((usr) => {
             console.log('userInfo:', usr);
             if (usr == null) {
@@ -517,7 +515,7 @@ document.getElementById('addUsersBtn').addEventListener('click', (event) => {
                 successInviteDiv.textContent = 'Invite success: '+userEmail+' has joined this channel';
                 const inviteResults = document.getElementById('inviteResults');
                 inviteResults.appendChild(successInviteDiv);
-                // TODO new joined post in channel page
+                // TODO 2.6.2 new joined post in channel page
             }).catch((error) => {
                 screenErr(error);
             });

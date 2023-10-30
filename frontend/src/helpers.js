@@ -333,19 +333,77 @@ function messageBoxCreator(curUserId, message, channelId, curToken) {
     const reactionsDiv = document.createElement('div');
     reactionsDiv.classList.add('reactions', 'mt-2');
 
-    // Assuming we have a predefined list of reactions
+    // Reactions get from backend
+    let reactList = message.reacts;
     const reactions = ['❤️', '🔥', '👍'];
-    reactions.forEach(react => {
+    let cnt = [0, 0, 0];
+    let curUserBehaviors = [false, false, false];
+    reactList.forEach((react) => {
+        if (react.react == '❤️') {
+            cnt[0]++;
+            if (react.user == curUserId) curUserBehaviors[0] = true;
+        } else if (react.react == '🔥') {
+            cnt[1]++;
+            if (react.user == curUserId) curUserBehaviors[1] = true;
+        } else if (react.reaction == '👍') {
+            cnt[2]++;
+            if (react.user == curUserId) curUserBehaviors[2] = true;
+        }
+    });
+
+    // count the number of reactions
+
+    // Assuming we have a predefined list of reactions
+    reactions.forEach((react) => {
         const button = document.createElement('button');
-        button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+        button.classList.add('btn', 'btn-outline-primary', 'btn-sm', 'notReacted');
         button.setAttribute('type', 'button');
         button.id = react+'Btn';
         button.textContent = react + ' '; // Adding reaction emoji
         // TODO: backend increment reaction count
-        
+        let curStatus = curUserBehaviors[reactions.indexOf(react)];
+        if (curStatus) {
+            button.removeEventListener('click', () => {});
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                const url = `message/unreact/${channelId}/${message.id}`;
+                const inputData = { react };
+                apiCall(url, inputData, curToken, 'POST')
+                .then((data) => {
+                    // Handle the success response here
+                    console.log('unreactMessage', data);
+                    // change pin icon
+                    button.classList.remove('reacted');
+                    button.classList.add('notReacted');
+                    // get current channel messages again
+                    processMessages(curUserId, channelId, curToken);
+                }).catch((error) => {
+                    screenErr(error);
+                });
+            });
+        } else {
+            button.removeEventListener('click', () => {});
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                const url = `message/react/${channelId}/${message.id}`;
+                const inputData = { react};
+                apiCall(url, inputData, curToken, 'POST')
+                .then((data) => {
+                    // Handle the success response here
+                    console.log('reactMessage', data);
+                    // change pin icon
+                    button.classList.remove('notReacted');
+                    button.classList.add('reacted');
+                    // get current channel messages again
+                    processMessages(curUserId, channelId, curToken);
+                }).catch((error) => {
+                    screenErr(error);
+                });
+            });
+        }
         const span = document.createElement('span');
         span.classList.add('reaction-count');
-        span.textContent = '0'; // Default count, should be updated based on actual data
+        span.textContent = cnt[reactions.indexOf(react)];
         button.appendChild(span);
 
         reactionsDiv.appendChild(button);
