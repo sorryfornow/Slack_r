@@ -160,7 +160,6 @@ signinForm.addEventListener('submit', (event) => {
 
 });
 
-// TODO signup token
 
 signupForm.addEventListener('submit', (event) => {
     event.preventDefault();

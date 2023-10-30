@@ -122,12 +122,10 @@ function messageBoxCreator(curUserId, message, channelId, curToken) {
     userNameButton.classList.add('btn', 'ml-2', 'textUser');
     userNameButton.setAttribute('type', 'button');
     userNameButton.setAttribute('data-user-id', message.sender);
-    // TODO: add event listener for user name button
 
     const senderId = message.sender;
     if (senderId == curUserId) {
         document.getElementById('editUserInfoBtn').disabled = false;
-        // TODO: edit message and delete message
         // add Btn for edit and delete message
         const editMsgBtn = document.createElement('button');
         editMsgBtn.classList.add('btn', 'btn-sm', 'btn-outline-primary', 'editMsgBtn');
@@ -199,7 +197,7 @@ function messageBoxCreator(curUserId, message, channelId, curToken) {
                 } else if (messageText == '') {
                     messageData = { image: imageFile };
                 }
-                
+
                 apiCall(url_edit, messageData, curToken, 'PUT')
                 .then((data) => {
                     // Handle the success response here
@@ -232,6 +230,11 @@ function messageBoxCreator(curUserId, message, channelId, curToken) {
     userNameButton.addEventListener('click', (event) => {
         event.preventDefault();
         getUserInfo(senderId, curToken).then((usrInfo) => {
+            if (senderId == curUserId) {
+                document.getElementById('editUserInfoBtn').disabled = false;
+            } else {
+                document.getElementById('editUserInfoBtn').disabled = true;
+            }
             document.getElementById('userModalName').textContent = usrInfo.name;
             document.getElementById('userModalEmail').textContent = usrInfo.email;
             document.getElementById('userModalBio').textContent = usrInfo.bio;

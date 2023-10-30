@@ -11,7 +11,7 @@
     "34409": {
       "email": "siqingzhang@asu.edu",
       "name": "Siqing",
-      "password": "123456",
+      "password": "12345",
       "bio": "Yes I am Siqing",
       "image": "",
       "sessionActive": true
@@ -120,6 +120,16 @@
         34409
       ],
       "messages": [
+        {
+          "id": 44,
+          "message": "Hi, I am Siqing",
+          "sender": 34409,
+          "sentAt": "2023-10-30T00:50:55.704Z",
+          "edited": false,
+          "editedAt": null,
+          "pinned": false,
+          "reacts": []
+        },
         {
           "id": 42,
           "message": "yeah, i do! i just didn't think that you did",
@@ -590,5 +600,5 @@
       "messages": []
     }
   },
-  "nextMessageId": 44
+  "nextMessageId": 45
 }
