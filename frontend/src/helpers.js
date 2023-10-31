@@ -17,6 +17,9 @@ import { BACKEND_PORT } from './config.js';
 
 export let globalChannelID = null;
 let currentStartIndex = 0;  // index for scroll
+export let currentImageIndex = 0;
+export let allImages = []; // hold all the images 
+
 
 export function fileToDataUrl(file) {
     const validFileTypes = [ 'image/jpeg', 'image/png', 'image/jpg' ]
@@ -309,7 +312,8 @@ function messageBoxCreator(curUserId, message, channelId, curToken) {
 
     // Message Content
     const messageDetails = document.createElement('div');
-    messageDetails.id = 'messageDetails';
+    messageDetails.id = 'messageDetails'+message.id;
+    messageDetails.classList.add('message-details');
 
     if (message.image) {
         // Image message
@@ -318,13 +322,36 @@ function messageBoxCreator(curUserId, message, channelId, curToken) {
         image.setAttribute('src', message.image);
         image.setAttribute('data-toggle', 'modal');
         image.setAttribute('data-target', '#imageModal');
+
+        image.addEventListener('click', function() {
+            // Display clicked image in modal
+            allImages.push(message.image);
+            document.getElementById('modalImage').src = this.src;
+
+            document.getElementById('prevImage').addEventListener('click', function() {
+                if (currentImageIndex > 0) {
+                    currentImageIndex--;
+                    document.getElementById('modalImage').src = allImages[currentImageIndex];
+                }
+            });
+            
+            document.getElementById('nextImage').addEventListener('click', function() {
+                if (currentImageIndex < allImages.length - 1) {
+                    currentImageIndex++;
+                    document.getElementById('modalImage').src = allImages[currentImageIndex];
+                }
+            });
+            // TODO 
+            const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+            imageModal.show();
+        });
         messageDetails.appendChild(image);
     } else {
         // Text message
         const messageContent = document.createElement('div');
         messageContent.id = `message-content-${message.id}`;
         messageContent.classList.add('message-content-area', 'mt-2');
-        messageContent.setAttribute('contenteditable', 'true');
+        messageContent.setAttribute('contenteditable', 'false');
         messageContent.textContent = message.message;
         messageDetails.appendChild(messageContent);
     }
@@ -360,7 +387,7 @@ function messageBoxCreator(curUserId, message, channelId, curToken) {
         button.setAttribute('type', 'button');
         button.id = react+'Btn';
         button.textContent = react + ' '; // Adding reaction emoji
-        // TODO: backend increment reaction count
+        // backend increment reaction count DEBUG
         let curStatus = curUserBehaviors[reactions.indexOf(react)];
         if (curStatus) {
             button.removeEventListener('click', () => {});
@@ -585,6 +612,9 @@ export function displayChannels(channelList, globalUserId, globalToken) {
             // get current channel id
             const channelId = event.target.id.slice(7);
             globalChannelID = channelId;
+            // empty allImages
+            currentImageIndex = 0;
+            allImages = [];
             // show the message input area
             const messagePhotoUploadContainer = document.getElementById('messagePhotoUploadContainer');
             messagePhotoUploadContainer.classList.remove('hidden');
@@ -606,6 +636,9 @@ export function displayChannels(channelList, globalUserId, globalToken) {
             // get current channel id
             const channelId = event.target.id.slice(4);
             globalChannelID = channelId;
+            // empty allImages
+            currentImageIndex = 0;
+            allImages = [];
             // get channel info
             const url = `channel/${channelId}`;
             apiCall(url, null, globalToken, 'GET')
@@ -710,4 +743,4 @@ export function getUserInfoByEmail(emailInput, curToken) {
             // Consider throwing an error or returning a default value
             return null;
         });
-}
+};

@@ -635,32 +635,74 @@ document.getElementById('editProfileModal').addEventListener('submit', (event) =
 });
 
 
-// message send
-document.getElementById('messagePhotoUploadContainer').addEventListener('submit', (event) => {
+
+
+combinedForm.addEventListener('submit', (event) => {
     event.preventDefault(); // Prevent default form submission
-    // Get the current channel ID from the input
+    // Getting form and input elements for easier access later
     const message = document.getElementById('messageInput').value;
-    const image = document.getElementById('photoInput').files[0];
-    // Clear the form fields after submission
-    document.getElementById('messageInput').value = '';
-    if (document.getElementById('photoInput').value) {
-        document.getElementById('photoInput').value = '';
-    }
+    const imageGet = document.getElementById('photoInput').files[0];
 
-    const channelId = globalChannelID;
-    const url = `message/${channelId}`;
-    const data = { message, image };
-    apiCall(url, data, globalToken, 'POST')
-    .then((data) => {
-        // Handle the success response here
+    const readAsDataURL = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                resolve(event.target.result);
+            };
+            reader.onerror = function(error) {
+                reject(error);
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
+    const handleInput = (imageData) => {
+        // Clear the form fields after submission
+        document.getElementById('messageInput').value = '';
+        if (document.getElementById('photoInput').files.length > 0) {
+            document.getElementById('photoInput').value = '';
+        }
+
+        const channelId = globalChannelID;
+        const url = `message/${channelId}`;
+        const data = {
+            message,
+            image: imageData
+        };
+
         console.log('message', data);
-        // display channels
-        processMessages(globalUserId, channelId, globalToken);
-    }).catch((error) => {
-        screenErr(error);
-    });
+        if (message.trim() === '' && !imageData) {
+            screenErr('Message or image is empty');
+            return;
+        }
+        // Clear the form fields after submission
+        messageInput.value = '';
+        // Check if an image file was selected and clear the input
+        if (photoInput.files.length > 0) {
+            photoInput.value = '';
+        }
+        // Send the message to the server
+        apiCall(url, data, globalToken, 'POST')
+        .then(() => {
+            // Update the display with new messages
+            processMessages(globalUserId, channelId, globalToken);
+        }).catch((error) => {
+            screenErr(error);
+        });
+    };
 
+    if (imageGet) {
+        readAsDataURL(imageGet).then((imageData) => {
+            console.log('imageData:', imageData);
+            handleInput(imageData);
+        }).catch((error) => {
+            console.error('Error reading the image:', error);
+        });
+    } else {
+        handleInput('');
+    }
 });
+
 
 // Additional Event Listeners for enabling/disabling the Send button
 document.getElementById('messageInput').addEventListener('input', () => {
