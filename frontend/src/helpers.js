@@ -16,10 +16,10 @@
 import { BACKEND_PORT } from './config.js';
 
 export let globalChannelID = null;
-let currentStartIndex = 0;  // index for scroll
 export let currentImageIndex = 0;
 export let allImages = []; // hold all the images 
-
+let currentStartIndex = 0;  // scroll index
+let totalMessagesFetched = 0; 
 
 export function fileToDataUrl(file) {
     const validFileTypes = [ 'image/jpeg', 'image/png', 'image/jpg' ]
@@ -322,6 +322,8 @@ function messageBoxCreator(curUserId, message, channelId, curToken) {
         image.setAttribute('src', message.image);
         image.setAttribute('data-toggle', 'modal');
         image.setAttribute('data-target', '#imageModal');
+        image.style.width = '20vmin';  // 20% of the viewport's smaller dimension
+        image.style.height = 'auto';   // Maintains image's aspect ratio
 
         image.addEventListener('click', function() {
             // Display clicked image in modal
@@ -481,8 +483,9 @@ function displayMessages(curUserID, channelId, startIndex, globalToken, clearExi
     return fetchChannelMessages(channelId, startIndex, globalToken)
         .then((messages) => {
             // messages.sort((b, a) => a.sentAt - b.sentAt);
-            messages.forEach(message => {
+            messages.forEach((message) => {
                 // create div for each message
+                totalMessagesFetched += messages.length;
                 let currentMessage = messageBoxCreator(curUserID, message, channelId, globalToken);
                 const messageViewingArea = document.querySelector('.messageViewingArea');
                 const pinnedMessageViewingArea = document.querySelector('.pinnedMessageViewingArea');
@@ -533,20 +536,18 @@ function hideLoadingIndicator() {
 };
 
 function setupInfiniteScroll(curUserID, channelId, globalToken) {
-    console.log('setup Infinite Scroll', channelId);
     let isLoading = false;
-
     window.onscroll = () => {
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-            if (!isLoading) {
+            if (!isLoading && totalMessagesFetched > currentStartIndex) {
                 isLoading = true;
                 showLoadingIndicator();
                 displayMessages(curUserID, channelId, currentStartIndex, globalToken, false)
-                    .then((messageCount) => {
-                        currentStartIndex += messageCount;
-                        isLoading = false;
-                        hideLoadingIndicator();
-                    });
+                .then((messageCount) => {
+                    currentStartIndex += messageCount; // Make sure to update the currentStartIndex after fetching
+                    isLoading = false;
+                    hideLoadingIndicator();
+                }); 
             }
         }
     };
